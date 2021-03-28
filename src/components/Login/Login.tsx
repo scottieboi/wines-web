@@ -1,25 +1,12 @@
 import * as React from "react";
 import { useState } from "react";
+import { Token } from "../App/Token";
 import "./Login.scss";
+import loginUser from "./loginUser";
 
 interface LoginProps {
-  setToken: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setToken: (token: Token) => void;
 }
-
-interface Credentials {
-  username: string;
-  password: string;
-}
-
-const loginUser = (credentials: Credentials) => {
-  return fetch("http://localhost:8080/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  }).then((data) => data.json());
-};
 
 const Login: React.FunctionComponent<LoginProps> = (props: LoginProps) => {
   const [username, setUserName] = useState("");
