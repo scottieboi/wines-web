@@ -1,15 +1,22 @@
 import * as React from "react";
 import "./App.scss";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "../Dashboard/Dashboard";
 import Login from "../Login/Login";
 import Preferences from "../Preferences/Preferences";
-import useToken from "./useToken";
+import useApi from "./useApi";
+import Endpoint from "./Endpoint";
 
 function App(): JSX.Element {
-  const { token, setToken } = useToken();
+  const {
+    isLoggedIn,
+    setToken,
+    callEndpoint,
+    apiResults,
+    fetchingData,
+  } = useApi();
 
-  if (!token) {
+  if (!isLoggedIn) {
     return <Login setToken={setToken} />;
   }
 
@@ -19,11 +26,16 @@ function App(): JSX.Element {
       <BrowserRouter>
         <Switch>
           <Route path="/dashboard">
-            <Dashboard />
+            <Dashboard
+              fetchData={() => callEndpoint(Endpoint.FindAll)}
+              allWines={apiResults.findAllResponse}
+              loading={fetchingData[Endpoint.FindAll]}
+            />
           </Route>
           <Route path="/preferences">
             <Preferences />
           </Route>
+          <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
         </Switch>
       </BrowserRouter>
     </div>
