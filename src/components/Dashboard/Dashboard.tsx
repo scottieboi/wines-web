@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { AllWinesResponse } from "../ApiCalls/ApiResponseTypes";
 import { Title } from "../Title";
 import { TopBar } from "../TopBar";
+import AllWinesTable from "./AllWinesTable";
 
 interface DashboardProps {
   allWines: Array<AllWinesResponse>;
@@ -65,7 +66,7 @@ const Dashboard: React.FunctionComponent<DashboardProps> = (
             {loading ? (
               <CircularProgress className={classes.progress} />
             ) : (
-              <h2>{JSON.stringify(allWines)}</h2>
+              <AllWinesTable data={allWines} />
             )}
           </Paper>
         </Container>
