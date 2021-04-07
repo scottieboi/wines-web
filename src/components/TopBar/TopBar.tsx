@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
 
 const TopBar: React.FunctionComponent<TopBarProps> = (props: TopBarProps) => {
   const classes = useStyles();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };

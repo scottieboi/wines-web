@@ -1,11 +1,7 @@
-import {
-  CircularProgress,
-  Container,
-  makeStyles,
-  Paper,
-} from "@material-ui/core";
+import { Container, makeStyles, Paper } from "@material-ui/core";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { Loading } from "../Loading";
 import { AllWinesResponse } from "../ApiCalls/ApiResponseTypes";
 import { Title } from "../Title";
 import { TopBar } from "../TopBar";
@@ -37,9 +33,6 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
   },
-  progress: {
-    margin: "0 auto",
-  },
 }));
 
 const Dashboard: React.FunctionComponent<DashboardProps> = (
@@ -63,11 +56,7 @@ const Dashboard: React.FunctionComponent<DashboardProps> = (
         <Container maxWidth="lg" className={classes.container}>
           <Paper className={classes.paper}>
             <Title>All wines</Title>
-            {loading ? (
-              <CircularProgress className={classes.progress} />
-            ) : (
-              <AllWinesTable data={allWines} />
-            )}
+            {loading ? <Loading /> : <AllWinesTable data={allWines} />}
           </Paper>
         </Container>
       </main>
