@@ -1,4 +1,5 @@
 import { useReducer } from "react";
+import { AllWinesResponse } from "./ApiResponseTypes";
 import callApi from "./callApi";
 import Endpoint from "./Endpoint";
 import { Token } from "./Token";
@@ -29,7 +30,7 @@ const initialState: State = {
 
 type State = {
   token: string | null;
-  findAllResponse: Array<Record<string, any>>;
+  findAllResponse: Array<AllWinesResponse>;
   fetchingData: Record<Endpoint, boolean>;
 };
 
@@ -43,7 +44,7 @@ type Action =
   | {
       type: ActionType.UpdateData;
       endpoint: Endpoint;
-      data: any;
+      data: Array<AllWinesResponse>;
     }
   | {
       type: ActionType.FetchData;
@@ -68,7 +69,7 @@ function reducer(state: State, action: Action): State {
         case Endpoint.FindAll:
           return {
             ...state,
-            findAllResponse: action.data,
+            findAllResponse: action.data as Array<AllWinesResponse>,
             fetchingData: { ...state.fetchingData, [action.endpoint]: false },
           };
         default:

@@ -1,5 +1,5 @@
 enum Endpoint {
-  FindAll = 1,
+  FindAll,
 }
 
 export default Endpoint;
