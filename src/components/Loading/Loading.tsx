@@ -1,7 +1,7 @@
 import * as React from "react";
 import { CircularProgress, makeStyles } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   progress: {
     display: "flex",
     width: "100%",
