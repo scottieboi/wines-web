@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import { useApi } from "../ApiCalls";
+import { useApi } from "../../ApiCalls";
 import { Dashboard } from "../Dashboard";
 import { Login } from "../Login";
 
@@ -23,7 +23,7 @@ function App(): JSX.Element {
         <Route path="/dashboard">
           <Dashboard
             callEndpoint={callEndpoint}
-            allWines={apiResults.findAllResponse}
+            allWines={apiResults.findAllWinesResponse}
             fetchingData={fetchingData}
           />
         </Route>

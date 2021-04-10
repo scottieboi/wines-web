@@ -2,14 +2,14 @@ import { Container, makeStyles, Paper } from "@material-ui/core";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Loading } from "../Loading";
-import { AllWinesResponse } from "../ApiCalls/ApiResponseTypes";
+import { AllWinesResponse } from "../../ApiCalls/ApiResponseTypes";
 import { Title } from "../Title";
 import { TopBar } from "../TopBar";
 import AllWinesTable from "./AllWinesTable";
-import { Endpoint } from "../ApiCalls";
+import { Endpoint } from "../../ApiCalls";
 
 interface DashboardProps {
-  allWines: Array<AllWinesResponse>;
+  allWines: Array<AllWinesResponse> | null;
   fetchingData: Record<Endpoint, boolean>;
   callEndpoint: (endpoint: Endpoint) => void;
 }
@@ -43,10 +43,10 @@ const Dashboard: React.FunctionComponent<DashboardProps> = (
   const classes = useStyles();
 
   const { callEndpoint, allWines, fetchingData } = props;
-  const loading = fetchingData[Endpoint.FindAll];
+  const loading = fetchingData[Endpoint.FindAllWines];
   useEffect(() => {
     if (shouldFetchData && !loading) {
-      callEndpoint(Endpoint.FindAll);
+      callEndpoint(Endpoint.FindAllWines);
       setShouldFetchData(false);
     }
   }, [shouldFetchData, loading, callEndpoint]);
@@ -58,7 +58,11 @@ const Dashboard: React.FunctionComponent<DashboardProps> = (
         <Container maxWidth="lg" className={classes.container}>
           <Paper className={classes.paper}>
             <Title>All wines</Title>
-            {loading ? <Loading /> : <AllWinesTable data={allWines} />}
+            {loading || allWines === null ? (
+              <Loading />
+            ) : (
+              <AllWinesTable data={allWines} />
+            )}
           </Paper>
         </Container>
       </main>

@@ -1,5 +1,6 @@
 enum Endpoint {
-  FindAll,
+  FindAllWines,
+  FindWineById,
 }
 
 export default Endpoint;

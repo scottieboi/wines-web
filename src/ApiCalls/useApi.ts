@@ -1,5 +1,5 @@
 import { useReducer } from "react";
-import { AllWinesResponse } from "./ApiResponseTypes";
+import { AllWinesResponse, FindWineRespone } from "./ApiResponseTypes";
 import callApi from "./callApi";
 import Endpoint from "./Endpoint";
 import { Token } from "./Token";
@@ -10,6 +10,10 @@ const getToken = (): string | null => {
   return userToken?.token ?? null;
 };
 
+/**
+ * Initialies the fetchingData object, with keys for every Endpoint, to false.
+ * @returns An initialised object, with keys for every Endpoint.
+ */
 const initFetchingData = () => {
   return Object.values(Endpoint)
     .filter((endpoint) => typeof endpoint === "string")
@@ -24,14 +28,16 @@ const initFetchingData = () => {
 
 const initialState: State = {
   token: getToken(),
-  findAllResponse: [],
+  findAllWinesResponse: null,
+  findWineResponse: null,
   fetchingData: initFetchingData(),
 };
 
 type State = {
   token: string | null;
-  findAllResponse: Array<AllWinesResponse>;
   fetchingData: Record<Endpoint, boolean>;
+  findAllWinesResponse: Array<AllWinesResponse> | null;
+  findWineResponse: FindWineRespone | null;
 };
 
 enum ActionType {
@@ -44,7 +50,7 @@ type Action =
   | {
       type: ActionType.UpdateData;
       endpoint: Endpoint;
-      data: Array<AllWinesResponse>;
+      data: Array<AllWinesResponse> | FindWineRespone;
     }
   | {
       type: ActionType.FetchData;
@@ -59,17 +65,27 @@ function reducer(state: State, action: Action): State {
   switch (action.type) {
     case ActionType.SaveToken:
       return { ...state, token: action.token };
+
+    // Handle requests
     case ActionType.FetchData:
       return {
         ...state,
         fetchingData: { ...state.fetchingData, [action.endpoint]: true },
       };
+
+    // Handle responses
     case ActionType.UpdateData:
       switch (action.endpoint) {
-        case Endpoint.FindAll:
+        case Endpoint.FindAllWines:
           return {
             ...state,
-            findAllResponse: action.data as Array<AllWinesResponse>,
+            findAllWinesResponse: action.data as Array<AllWinesResponse>,
+            fetchingData: { ...state.fetchingData, [action.endpoint]: false },
+          };
+        case Endpoint.FindWineById:
+          return {
+            ...state,
+            findWineResponse: action.data as FindWineRespone,
             fetchingData: { ...state.fetchingData, [action.endpoint]: false },
           };
         default:
@@ -83,17 +99,19 @@ function reducer(state: State, action: Action): State {
 export default function useApi() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { token, findAllResponse, fetchingData } = state;
-
   const saveToken = (userToken: Token) => {
     localStorage.setItem("token", JSON.stringify(userToken));
     dispatch({ type: ActionType.SaveToken, token: userToken.token });
   };
 
-  const callEndpoint = (endpoint: Endpoint) => {
+  const { token } = state;
+  const callEndpoint = (
+    endpoint: Endpoint,
+    queryParams?: Record<string, string>
+  ) => {
     if (token) {
       dispatch({ type: ActionType.FetchData, endpoint });
-      callApi(token, endpoint).then((response) => {
+      callApi({ token, endpoint, queryParams }).then((response) => {
         dispatch({
           type: ActionType.UpdateData,
           endpoint,
@@ -103,10 +121,12 @@ export default function useApi() {
     }
   };
 
+  const { fetchingData, findAllWinesResponse, findWineResponse } = state;
   return {
     isLoggedIn: !!token,
     apiResults: {
-      findAllResponse,
+      findAllWinesResponse,
+      findWineResponse,
     },
     fetchingData,
     setToken: saveToken,
