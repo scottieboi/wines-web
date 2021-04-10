@@ -6,11 +6,12 @@ import { AllWinesResponse } from "../ApiCalls/ApiResponseTypes";
 import { Title } from "../Title";
 import { TopBar } from "../TopBar";
 import AllWinesTable from "./AllWinesTable";
+import { Endpoint } from "../ApiCalls";
 
 interface DashboardProps {
   allWines: Array<AllWinesResponse>;
-  loading: boolean;
-  fetchData: () => void;
+  fetchingData: Record<Endpoint, boolean>;
+  callEndpoint: (endpoint: Endpoint) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -41,13 +42,14 @@ const Dashboard: React.FunctionComponent<DashboardProps> = (
   const [shouldFetchData, setShouldFetchData] = useState(true);
   const classes = useStyles();
 
-  const { fetchData, allWines, loading } = props;
+  const { callEndpoint, allWines, fetchingData } = props;
+  const loading = fetchingData[Endpoint.FindAll];
   useEffect(() => {
     if (shouldFetchData && !loading) {
-      fetchData();
+      callEndpoint(Endpoint.FindAll);
       setShouldFetchData(false);
     }
-  }, [shouldFetchData, loading, fetchData]);
+  }, [shouldFetchData, loading, callEndpoint]);
   return (
     <div className={classes.root}>
       <TopBar titleText="Dashboard" />

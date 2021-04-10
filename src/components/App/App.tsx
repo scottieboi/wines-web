@@ -22,9 +22,9 @@ function App(): JSX.Element {
       <Switch>
         <Route path="/dashboard">
           <Dashboard
-            fetchData={() => callEndpoint(Endpoint.FindAll)}
+            callEndpoint={callEndpoint}
             allWines={apiResults.findAllResponse}
-            loading={fetchingData[Endpoint.FindAll]}
+            fetchingData={fetchingData}
           />
         </Route>
         <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
