@@ -1,4 +1,4 @@
-import { AllWinesResponse, Endpoint, FindWineRespone } from "../ApiCalls";
+import { AllWinesResponse, Endpoint, FindWineRespone } from "../Types";
 
 export enum ActionType {
   "SaveToken",

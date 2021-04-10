@@ -2,11 +2,10 @@ import { Container, makeStyles, Paper } from "@material-ui/core";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Loading } from "../Loading";
-import { AllWinesResponse } from "../../ApiCalls/ApiResponseTypes";
+import { AllWinesResponse, Endpoint } from "../../Types";
 import { Title } from "../Title";
 import { TopBar } from "../TopBar";
 import AllWinesTable from "./AllWinesTable";
-import { Endpoint } from "../../ApiCalls";
 
 interface DashboardProps {
   allWines: Array<AllWinesResponse> | null;

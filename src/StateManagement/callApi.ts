@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import Endpoint from "./Endpoint";
+import { Endpoint } from "../Types";
 
 interface CallApiParams {
   token: string;

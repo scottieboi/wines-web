@@ -1,7 +1,7 @@
 import * as React from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import { initialState, reducer } from "../../StateManagement";
-import { useApi } from "../../ApiCalls";
+import { initialState, reducer } from "../../StateManagement/reducer";
+import useApi from "../../StateManagement/useApi";
 import { Dashboard } from "../Dashboard";
 import { Login } from "../Login";
 

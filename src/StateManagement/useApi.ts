@@ -1,7 +1,6 @@
-import { Action, ActionType } from "../StateManagement";
+import { Action, ActionType } from "./action";
 import callApi from "./callApi";
-import Endpoint from "./Endpoint";
-import { Token } from "./Token";
+import { Endpoint, Token } from "../Types";
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function useApi(

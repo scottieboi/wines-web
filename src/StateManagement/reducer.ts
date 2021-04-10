@@ -1,4 +1,4 @@
-import { AllWinesResponse, Endpoint, FindWineRespone } from "../ApiCalls";
+import { AllWinesResponse, Endpoint, FindWineRespone } from "../Types";
 import { Action, ActionType } from "./action";
 
 /**

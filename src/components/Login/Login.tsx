@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { Token } from "../../ApiCalls";
+import { Token } from "../../Types";
 import "./Login.scss";
 import loginUser from "./loginUser";
 
