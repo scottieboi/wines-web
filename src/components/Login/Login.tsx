@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { useAppDispatch, useAuth } from "../App/hooks";
+import { useAuth } from "../App/hooks";
 import "./Login.scss";
 import loginUser from "./loginUser";
 
@@ -8,8 +8,7 @@ const Login: React.FunctionComponent = () => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
-  const dispatch = useAppDispatch();
-  const { setToken } = useAuth(dispatch);
+  const { setToken } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

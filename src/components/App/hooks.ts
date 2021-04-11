@@ -9,7 +9,10 @@ import type { RootState, AppDispatch } from "./store";
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-export function useApi(token: string | null, dispatch: AppDispatch) {
+export function useApi() {
+  const dispatch = useAppDispatch();
+  const token = useAppSelector((state) => state.token);
+
   const callEndpoint = (
     endpoint: Endpoint,
     queryParams?: Record<string, string>
@@ -25,7 +28,9 @@ export function useApi(token: string | null, dispatch: AppDispatch) {
   return callEndpoint;
 }
 
-export function useAuth(dispatch: AppDispatch) {
+export function useAuth() {
+  const dispatch = useAppDispatch();
+
   const saveTokenInLocalStorage = (userToken: Token) => {
     localStorage.setItem("token", JSON.stringify(userToken));
     dispatch(saveToken({ token: userToken.token }));

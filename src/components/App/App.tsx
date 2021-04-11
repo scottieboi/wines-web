@@ -1,13 +1,12 @@
 import * as React from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import { useAppDispatch, useAppSelector, useApi } from "./hooks";
+import { useAppSelector, useApi } from "./hooks";
 import { Dashboard } from "../Dashboard";
 import { Login } from "../Login";
 
 function App(): JSX.Element {
   const token = useAppSelector((state) => state.token);
-  const dispatch = useAppDispatch();
-  const callEndpoint = useApi(token, dispatch);
+  const callEndpoint = useApi();
 
   if (!token) {
     return <Login />;
