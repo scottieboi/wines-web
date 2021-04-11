@@ -1,15 +1,13 @@
-import { Action, ActionType } from "./action";
 import callApi from "./callApi";
 import { Endpoint, Token } from "../Types";
+import { fetchData, saveToken, updateData } from "./actions";
+import { AppDispatch } from "./store";
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function useApi(
-  token: string | null,
-  dispatch: React.Dispatch<Action>
-) {
-  const saveToken = (userToken: Token) => {
+export default function useApi(token: string | null, dispatch: AppDispatch) {
+  const saveTokenInLocalStorage = (userToken: Token) => {
     localStorage.setItem("token", JSON.stringify(userToken));
-    dispatch({ type: ActionType.SaveToken, token: userToken.token });
+    saveToken({ token: userToken.token });
   };
 
   const callEndpoint = (
@@ -17,20 +15,16 @@ export default function useApi(
     queryParams?: Record<string, string>
   ) => {
     if (token) {
-      dispatch({ type: ActionType.FetchData, endpoint });
+      dispatch(fetchData({ endpoint }));
       callApi({ token, endpoint, queryParams }).then((response) => {
-        dispatch({
-          type: ActionType.UpdateData,
-          endpoint,
-          data: response.data,
-        });
+        dispatch(updateData({ endpoint, data: response.data }));
       });
     }
   };
 
   return {
     isLoggedIn: !!token,
-    setToken: saveToken,
+    setToken: saveTokenInLocalStorage,
     callEndpoint,
   };
 }

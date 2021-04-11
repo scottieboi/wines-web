@@ -1,15 +1,14 @@
 import * as React from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import { initialState, reducer } from "../../StateManagement/reducer";
-import useApi from "../../StateManagement/useApi";
+import { useAppDispatch, useAppSelector } from "../../State/hooks";
+import useApi from "../../State/useApi";
 import { Dashboard } from "../Dashboard";
 import { Login } from "../Login";
 
-export const AppContext = React.createContext(null);
-
 function App(): JSX.Element {
-  const [state, dispatch] = React.useReducer(reducer, initialState);
-  const { isLoggedIn, setToken, callEndpoint } = useApi(state.token, dispatch);
+  const token = useAppSelector((state) => state.token);
+  const dispatch = useAppDispatch();
+  const { isLoggedIn, setToken, callEndpoint } = useApi(token, dispatch);
 
   if (!isLoggedIn) {
     return <Login setToken={setToken} />;
@@ -19,11 +18,7 @@ function App(): JSX.Element {
     <BrowserRouter>
       <Switch>
         <Route path="/dashboard">
-          <Dashboard
-            callEndpoint={callEndpoint}
-            allWines={state.findAllWinesResponse}
-            fetchingData={state.fetchingData}
-          />
+          <Dashboard callEndpoint={callEndpoint} />
         </Route>
         <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
       </Switch>

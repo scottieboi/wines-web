@@ -2,14 +2,13 @@ import { Container, makeStyles, Paper } from "@material-ui/core";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Loading } from "../Loading";
-import { AllWinesResponse, Endpoint } from "../../Types";
+import { Endpoint } from "../../Types";
 import { Title } from "../Title";
 import { TopBar } from "../TopBar";
 import AllWinesTable from "./AllWinesTable";
+import { useAppSelector } from "../../State/hooks";
 
 interface DashboardProps {
-  allWines: Array<AllWinesResponse> | null;
-  fetchingData: Record<Endpoint, boolean>;
   callEndpoint: (endpoint: Endpoint) => void;
 }
 
@@ -41,8 +40,11 @@ const Dashboard: React.FunctionComponent<DashboardProps> = (
   const [shouldFetchData, setShouldFetchData] = useState(true);
   const classes = useStyles();
 
-  const { callEndpoint, allWines, fetchingData } = props;
+  const { callEndpoint } = props;
+  const fetchingData = useAppSelector((state) => state.fetchingData);
   const loading = fetchingData[Endpoint.FindAllWines];
+  const allWines = useAppSelector((state) => state.findAllWinesResponse);
+
   useEffect(() => {
     if (shouldFetchData && !loading) {
       callEndpoint(Endpoint.FindAllWines);
