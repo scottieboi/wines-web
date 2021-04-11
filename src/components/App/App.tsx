@@ -7,10 +7,10 @@ import { Login } from "../Login";
 function App(): JSX.Element {
   const token = useAppSelector((state) => state.token);
   const dispatch = useAppDispatch();
-  const { setToken, callEndpoint } = useApi(token, dispatch);
+  const callEndpoint = useApi(token, dispatch);
 
   if (!token) {
-    return <Login setToken={setToken} />;
+    return <Login />;
   }
 
   return (

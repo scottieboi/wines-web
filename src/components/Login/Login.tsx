@@ -1,16 +1,15 @@
 import * as React from "react";
 import { useState } from "react";
-import { Token } from "../../types";
+import { useAppDispatch, useAuth } from "../App/hooks";
 import "./Login.scss";
 import loginUser from "./loginUser";
 
-interface LoginProps {
-  setToken: (token: Token) => void;
-}
-
-const Login: React.FunctionComponent<LoginProps> = (props: LoginProps) => {
+const Login: React.FunctionComponent = () => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
+
+  const dispatch = useAppDispatch();
+  const { setToken } = useAuth(dispatch);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,7 +17,7 @@ const Login: React.FunctionComponent<LoginProps> = (props: LoginProps) => {
       username,
       password,
     });
-    props.setToken(token);
+    setToken(token);
   };
 
   return (
