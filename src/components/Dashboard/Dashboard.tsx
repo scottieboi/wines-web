@@ -6,11 +6,7 @@ import { Endpoint } from "../../types";
 import { Title } from "../Title";
 import { TopBar } from "../TopBar";
 import AllWinesTable from "./AllWinesTable";
-import { useAppSelector } from "../App/hooks";
-
-interface DashboardProps {
-  callEndpoint: (endpoint: Endpoint) => void;
-}
+import { useApi, useAppSelector } from "../App/hooks";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,13 +30,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Dashboard: React.FunctionComponent<DashboardProps> = (
-  props: DashboardProps
-) => {
+const Dashboard = (): JSX.Element => {
   const [shouldFetchData, setShouldFetchData] = useState(true);
   const classes = useStyles();
+  const callEndpoint = useApi();
 
-  const { callEndpoint } = props;
   const loading = useAppSelector(
     (state) => state.fetchingData[Endpoint.FindAllWines]
   );

@@ -4,7 +4,7 @@ import { useAuth } from "../App/hooks";
 import "./Login.scss";
 import loginUser from "./loginUser";
 
-const Login: React.FunctionComponent = () => {
+const Login = (): JSX.Element => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
