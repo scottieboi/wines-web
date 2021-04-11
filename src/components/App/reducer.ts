@@ -31,14 +31,14 @@ const getToken = (): string | null => {
   return userToken?.token ?? null;
 };
 
-export const initialState: State = {
+const initialState: State = {
   token: getToken(),
   findAllWinesResponse: null,
   findWineResponse: null,
   fetchingData: initFetchingData(),
 };
 
-export const reducer = createReducer(initialState, (builder) => {
+export default createReducer(initialState, (builder) => {
   builder
     .addCase(saveToken, (state, action) => {
       return { ...state, token: action.payload.token };
