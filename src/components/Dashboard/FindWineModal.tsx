@@ -9,7 +9,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import * as React from "react";
-import { FindWineRespone } from "../../Types";
+import { FindWineRespone } from "../../types";
 import { Loading } from "../Loading";
 
 interface FindWineModalProps {

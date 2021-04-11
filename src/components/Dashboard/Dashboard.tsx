@@ -2,11 +2,11 @@ import { Container, makeStyles, Paper } from "@material-ui/core";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Loading } from "../Loading";
-import { Endpoint } from "../../Types";
+import { Endpoint } from "../../types";
 import { Title } from "../Title";
 import { TopBar } from "../TopBar";
 import AllWinesTable from "./AllWinesTable";
-import { useAppSelector } from "../../State/hooks";
+import { useAppSelector } from "../App/hooks";
 
 interface DashboardProps {
   callEndpoint: (endpoint: Endpoint) => void;
@@ -41,8 +41,9 @@ const Dashboard: React.FunctionComponent<DashboardProps> = (
   const classes = useStyles();
 
   const { callEndpoint } = props;
-  const fetchingData = useAppSelector((state) => state.fetchingData);
-  const loading = fetchingData[Endpoint.FindAllWines];
+  const loading = useAppSelector(
+    (state) => state.fetchingData[Endpoint.FindAllWines]
+  );
   const allWines = useAppSelector((state) => state.findAllWinesResponse);
 
   useEffect(() => {

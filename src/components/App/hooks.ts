@@ -1,13 +1,19 @@
-import callApi from "./callApi";
-import { Endpoint, Token } from "../Types";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import callApi from "../../utils/callApi";
+import { Endpoint, Token } from "../../types";
 import { fetchData, saveToken, updateData } from "./actions";
-import { AppDispatch } from "./store";
+import type { RootState, AppDispatch } from "./store";
+
+// Use throughout your app instead of plain `useDispatch` and `useSelector`
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function useApi(token: string | null, dispatch: AppDispatch) {
+export function useApi(token: string | null, dispatch: AppDispatch) {
   const saveTokenInLocalStorage = (userToken: Token) => {
     localStorage.setItem("token", JSON.stringify(userToken));
-    saveToken({ token: userToken.token });
+    dispatch(saveToken({ token: userToken.token }));
   };
 
   const callEndpoint = (
@@ -23,7 +29,6 @@ export default function useApi(token: string | null, dispatch: AppDispatch) {
   };
 
   return {
-    isLoggedIn: !!token,
     setToken: saveTokenInLocalStorage,
     callEndpoint,
   };
