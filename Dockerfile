@@ -14,11 +14,10 @@ RUN npm run build
 # Choose NGINX as our base Docker image
 FROM nginx:alpine
 
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
 # Set working directory to nginx asset directory
 WORKDIR /usr/share/nginx/html
-
-# Remove default nginx static assets
-RUN rm -rf *
 
 # Copy static assets from builder stage
 COPY --from=builder /app/dist .
