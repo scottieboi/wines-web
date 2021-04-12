@@ -7,7 +7,8 @@ import {
   Link,
 } from "@material-ui/core";
 import * as React from "react";
-import { AllWinesResponse } from "../../types";
+import { useApi } from "../App/hooks";
+import { AllWinesResponse, Endpoint } from "../../types";
 import FindWineModal from "./FindWineModal";
 
 interface AllWinesTableProps {
@@ -18,23 +19,20 @@ const AllWinesTable: React.FunctionComponent<AllWinesTableProps> = (
   props: AllWinesTableProps
 ) => {
   const [isOpen, setOpen] = React.useState(false);
+  const callEndpoint = useApi();
 
   const onModalClose = () => {
     setOpen(false);
   };
-  const onModalOpen = () => {
+  const onModalOpen = (id: number) => {
     setOpen(true);
+    callEndpoint(Endpoint.FindWineById, { id: id.toString() });
   };
 
   const { data } = props;
   return (
     <>
-      <FindWineModal
-        isOpen={isOpen}
-        onClose={onModalClose}
-        loading
-        data={null}
-      />
+      <FindWineModal isOpen={isOpen} onClose={onModalClose} />
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -49,7 +47,9 @@ const AllWinesTable: React.FunctionComponent<AllWinesTableProps> = (
           {data.map((item) => (
             <TableRow key={item.id}>
               <TableCell>
-                <Link onClick={onModalOpen}>{item.vineyard}</Link>
+                <Link onClick={() => onModalOpen(item.id)}>
+                  {item.vineyard}
+                </Link>
               </TableCell>
               <TableCell>{item.wineName}</TableCell>
               <TableCell>{item.wineType}</TableCell>

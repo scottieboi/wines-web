@@ -4,64 +4,58 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Modal,
-  Paper,
   makeStyles,
+  Dialog,
+  DialogTitle,
 } from "@material-ui/core";
 import * as React from "react";
-import { FindWineRespone } from "../../types";
+import { useAppSelector } from "../App/hooks";
+import { Endpoint } from "../../types";
 import { Loading } from "../Loading";
 
 interface FindWineModalProps {
   isOpen: boolean;
   onClose: () => void;
-  loading: boolean;
-  data: FindWineRespone | null;
 }
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    position: "absolute",
-    width: "400px",
+    minWidth: "250px",
     backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
+    border: "1px solid #000",
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    padding: theme.spacing(2, 4),
+  },
+  table: {
+    marginBottom: theme.spacing(2),
   },
 }));
-
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
 
 const FindWineModal: React.FunctionComponent<FindWineModalProps> = (
   props: FindWineModalProps
 ) => {
+  const { isOpen, onClose } = props;
   const classes = useStyles();
 
-  // getModalStyle is not a pure function, we roll the style only on the first render
-  const [modalStyle] = React.useState(getModalStyle);
-  const { isOpen, onClose, loading, data } = props;
+  const loading = useAppSelector(
+    (state) => state.fetchingData[Endpoint.FindWineById]
+  );
+  const data = useAppSelector((state) => state.findWineResponse);
+
   return (
-    <Modal
+    <Dialog
       open={isOpen}
       onClose={onClose}
       aria-labelledby="simple-modal-title"
       aria-describedby="simple-modal-description"
     >
-      <Paper style={modalStyle} className={classes.paper}>
+      <div className={classes.paper}>
         {loading || data === null ? (
           <Loading />
         ) : (
           <>
-            <Table size="small">
+            <DialogTitle>Wine details</DialogTitle>
+            <Table size="small" className={classes.table}>
               <TableHead>
                 <TableRow>
                   <TableCell>Wine name</TableCell>
@@ -77,11 +71,16 @@ const FindWineModal: React.FunctionComponent<FindWineModalProps> = (
                   <TableCell>{data.wineType}</TableCell>
                   <TableCell>{data.vineyard}</TableCell>
                   <TableCell>{data.vintage}</TableCell>
-                  <TableCell align="right">{data.boxes}</TableCell>
+                  <TableCell align="right">
+                    {
+                      // Sum of all boxes
+                      data.boxes.reduce((total, b) => total + b.qty, 0)
+                    }
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
-            <Table size="small">
+            <Table size="small" className={classes.table}>
               <TableHead>
                 <TableRow>
                   <TableCell align="right">Box Number</TableCell>
@@ -99,8 +98,8 @@ const FindWineModal: React.FunctionComponent<FindWineModalProps> = (
             </Table>
           </>
         )}
-      </Paper>
-    </Modal>
+      </div>
+    </Dialog>
   );
 };
 
