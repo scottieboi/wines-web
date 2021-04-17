@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { useAuth } from "../App/hooks";
+import { useAuth } from "../../App/hooks";
 import "./Login.scss";
 import loginUser from "./loginUser";
 
