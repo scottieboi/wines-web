@@ -11,7 +11,7 @@ import {
 import * as React from "react";
 import { useAppSelector } from "../App/hooks";
 import { Endpoint } from "../../types";
-import { Loading } from "../Loading";
+import { Loading } from "../Common/Loading";
 
 interface FindWineModalProps {
   isOpen: boolean;

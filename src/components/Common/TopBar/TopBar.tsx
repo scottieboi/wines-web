@@ -5,6 +5,9 @@ import {
   Drawer,
   IconButton,
   List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   makeStyles,
   Toolbar,
   Typography,
@@ -12,9 +15,12 @@ import {
 import * as React from "react";
 import { useState } from "react";
 import MenuIcon from "@material-ui/icons/Menu";
+import AddBoxIcon from "@material-ui/icons/AddBox";
+import DashboardIcon from "@material-ui/icons/Dashboard";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import clsx from "clsx";
-import { mainListItems, secondaryListItems } from "./MenuListItems";
+import { useHistory } from "react-router-dom";
+import { Path } from "../../../routing";
 
 interface TopBarProps {
   titleText: string;
@@ -103,6 +109,15 @@ const useStyles = makeStyles((theme) => ({
 
 const TopBar: React.FunctionComponent<TopBarProps> = (props: TopBarProps) => {
   const classes = useStyles();
+
+  const history = useHistory();
+  const handleAddWine = () => {
+    history.push(Path.AddWine);
+  };
+  const handleDashboard = () => {
+    history.push(Path.Dashboard);
+  };
+
   const [open, setOpen] = useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -142,6 +157,13 @@ const TopBar: React.FunctionComponent<TopBarProps> = (props: TopBarProps) => {
           >
             {titleText}
           </Typography>
+          <IconButton
+            color="inherit"
+            aria-label="add a wine"
+            onClick={handleAddWine}
+          >
+            <AddBoxIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -157,9 +179,14 @@ const TopBar: React.FunctionComponent<TopBarProps> = (props: TopBarProps) => {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
-        <Divider />
-        <List>{secondaryListItems}</List>
+        <List>
+          <ListItem button onClick={handleDashboard}>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary="Dashboard" />
+          </ListItem>
+        </List>
       </Drawer>
     </>
   );
