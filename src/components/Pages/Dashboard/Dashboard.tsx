@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Loading } from "../../Common/Loading";
-import { Endpoint } from "../../../types";
+import { Endpoint } from "../../../api";
 import { Title } from "../../Common/Title";
 import AllWinesTable from "./AllWinesTable";
 import { useApi, useAppSelector } from "../../App/hooks";
@@ -24,7 +24,7 @@ const Dashboard = (): JSX.Element => {
     }
   }, [shouldFetchData, loading, callEndpoint]);
   return (
-    <Page>
+    <Page titleText="Dashboard">
       <Tile>
         <Title>All wines</Title>
         {loading || allWines === null ? (

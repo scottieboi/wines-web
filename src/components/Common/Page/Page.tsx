@@ -4,6 +4,7 @@ import { TopBar } from "../TopBar";
 
 interface PageProps {
   children: React.ReactNode;
+  titleText: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -28,12 +29,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Page: React.FunctionComponent<PageProps> = ({ children }: PageProps) => {
+const Page: React.FunctionComponent<PageProps> = ({
+  children,
+  titleText,
+}: PageProps) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <TopBar titleText="Dashboard" />
+      <TopBar titleText={titleText} />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>

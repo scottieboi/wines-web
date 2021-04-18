@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import * as React from "react";
 import { useAppSelector } from "../../App/hooks";
-import { Endpoint } from "../../../types";
+import { Endpoint } from "../../../api";
 import { Loading } from "../../Common/Loading";
 
 interface FindWineModalProps {

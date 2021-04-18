@@ -1,17 +1,17 @@
-export interface AllWinesResponse {
+export type AllWinesResponse = {
   id: number;
   wineName: string;
   wineType: string;
   vineyard: string;
   vintage: number;
   qty: number;
-}
+};
 
-export interface FindWineRespone {
+export type FindWineRespone = {
   id: number;
   wineName: string;
   wineType: string;
   vineyard: string;
   vintage: number;
   boxes: { [key: string]: number }[];
-}
+};

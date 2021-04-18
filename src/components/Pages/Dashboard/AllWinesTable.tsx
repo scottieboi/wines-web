@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import * as React from "react";
 import { useApi } from "../../App/hooks";
-import { AllWinesResponse, Endpoint } from "../../../types";
+import { AllWinesResponse, Endpoint } from "../../../api";
 import FindWineModal from "./FindWineModal";
 
 interface AllWinesTableProps {
