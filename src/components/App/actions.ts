@@ -1,5 +1,5 @@
 import { createAction } from "@reduxjs/toolkit";
-import { AllWinesResponse, Endpoint, FindWineRespone } from "../../api";
+import { AllWinesResponse, EndpointName, FindWineRespone } from "../../api";
 
 export const saveToken = createAction(
   "SAVE_TOKEN",
@@ -14,7 +14,7 @@ export const saveToken = createAction(
 
 export const fetchData = createAction(
   "FETCH_DATA",
-  ({ endpoint }: { endpoint: Endpoint }) => {
+  ({ endpoint }: { endpoint: EndpointName }) => {
     return {
       payload: {
         endpoint,
@@ -29,7 +29,7 @@ export const updateData = createAction(
     endpoint,
     data,
   }: {
-    endpoint: Endpoint;
+    endpoint: EndpointName;
     data: Array<AllWinesResponse> | FindWineRespone;
   }) => {
     return {

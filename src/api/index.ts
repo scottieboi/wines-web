@@ -1,5 +1,5 @@
 import { AllWinesResponse, FindWineRespone } from "./apiResponses";
-import Endpoint from "./Endpoint";
+import EndpointName from "./EndpointName";
 import { Token } from "./Token";
 
-export { AllWinesResponse, FindWineRespone, Endpoint, Token };
+export { AllWinesResponse, FindWineRespone, EndpointName, Token };

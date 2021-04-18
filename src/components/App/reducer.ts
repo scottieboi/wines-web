@@ -1,10 +1,10 @@
 import { createReducer } from "@reduxjs/toolkit";
-import { AllWinesResponse, Endpoint, FindWineRespone } from "../../api";
+import { AllWinesResponse, EndpointName, FindWineRespone } from "../../api";
 import { fetchData, saveToken, updateData } from "./actions";
 
 type State = {
   token: string | null;
-  fetchingData: Record<Endpoint, boolean>;
+  fetchingData: Record<EndpointName, boolean>;
   findAllWinesResponse: Array<AllWinesResponse> | null;
   findWineResponse: FindWineRespone | null;
 };
@@ -14,14 +14,14 @@ type State = {
  * @returns An initialised object, with keys for every Endpoint.
  */
 const initFetchingData = () => {
-  return Object.values(Endpoint)
+  return Object.values(EndpointName)
     .filter((endpoint) => typeof endpoint === "string")
     .reduce(
       (result, endpoint) => ({
         ...result,
         [endpoint]: false,
       }),
-      <Record<Endpoint, boolean>>{}
+      <Record<EndpointName, boolean>>{}
     );
 };
 
@@ -45,7 +45,7 @@ export default createReducer(initialState, (builder) => {
     })
     .addCase(updateData, (state, action) => {
       switch (action.payload.endpoint) {
-        case Endpoint.FindAllWines:
+        case EndpointName.FindAllWines:
           return {
             ...state,
             findAllWinesResponse: action.payload
@@ -55,7 +55,7 @@ export default createReducer(initialState, (builder) => {
               [action.payload.endpoint]: false,
             },
           };
-        case Endpoint.FindWineById:
+        case EndpointName.FindWineById:
           return {
             ...state,
             findWineResponse: action.payload.data as FindWineRespone,

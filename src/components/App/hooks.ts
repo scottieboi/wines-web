@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { Endpoint, Token } from "../../api";
+import { EndpointName, Token } from "../../api";
 import { fetchData, saveToken, updateData } from "./actions";
 import type { RootState, AppDispatch } from "./store";
 import { getAllWines, getWineById } from "../../api/callApi";
@@ -9,14 +9,14 @@ import { getAllWines, getWineById } from "../../api/callApi";
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-export function useApi<T extends Endpoint>(endpoint: T) {
+export function useApi<T extends EndpointName>(endpoint: T) {
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.token);
   const callEndpoint = (queryParams?: Record<string, string>) => {
     if (token) {
       // eslint-disable-next-line default-case
       switch (endpoint) {
-        case Endpoint.FindAllWines:
+        case EndpointName.FindAllWines:
           dispatch(fetchData({ endpoint }));
           getAllWines(token).then((response) => {
             dispatch(
@@ -28,7 +28,7 @@ export function useApi<T extends Endpoint>(endpoint: T) {
           });
           break;
 
-        case Endpoint.FindWineById:
+        case EndpointName.FindWineById:
           dispatch(fetchData({ endpoint }));
           getWineById(token, queryParams ?? {}).then((response) => {
             dispatch(
