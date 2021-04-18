@@ -1,25 +1,18 @@
-import axios, { AxiosResponse } from "axios";
-import { Endpoint } from ".";
+import { AxiosResponse } from "axios";
+import { apiClient } from "./apiClient";
+import { AllWinesResponse, FindWineRespone } from "./apiResponses";
 
-interface CallApiParams {
-  token: string;
-  endpoint: Endpoint;
-  queryParams?: Record<string, string>;
+export function getAllWines(
+  token: string
+): Promise<AxiosResponse<Array<AllWinesResponse>>> {
+  return apiClient.get<Array<AllWinesResponse>>("/wines");
 }
 
-export default function callApi({
-  token,
-  endpoint,
-  queryParams,
-}: CallApiParams): Promise<AxiosResponse<any>> {
-  switch (endpoint) {
-    case Endpoint.FindAllWines:
-      return axios.get(`${process.env.API_URL}/wines`);
-    case Endpoint.FindWineById:
-      return axios.get(`${process.env.API_URL}/wine`, {
-        params: queryParams,
-      });
-    default:
-      throw new Error("Unhandled endpoint called");
-  }
+export function getWineById(
+  token: string,
+  queryParams: Record<string, string>
+): Promise<AxiosResponse<FindWineRespone>> {
+  return apiClient.get<FindWineRespone>("/wine", {
+    params: queryParams,
+  });
 }

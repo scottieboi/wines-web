@@ -1,4 +1,4 @@
-import { AllWinesResponse, FindWineRespone } from "./ApiResponse";
+import { AllWinesResponse, FindWineRespone } from "./apiResponses";
 import Endpoint from "./Endpoint";
 import { Token } from "./Token";
 

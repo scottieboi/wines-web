@@ -19,14 +19,14 @@ const AllWinesTable: React.FunctionComponent<AllWinesTableProps> = (
   props: AllWinesTableProps
 ) => {
   const [isOpen, setOpen] = React.useState(false);
-  const callEndpoint = useApi();
+  const callEndpoint = useApi(Endpoint.FindWineById);
 
   const onModalClose = () => {
     setOpen(false);
   };
   const onModalOpen = (id: number) => {
     setOpen(true);
-    callEndpoint(Endpoint.FindWineById, { id: id.toString() });
+    callEndpoint({ id: id.toString() });
   };
 
   const { data } = props;

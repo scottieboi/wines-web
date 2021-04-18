@@ -10,7 +10,7 @@ import { Tile } from "../../Common/Tile";
 
 const Dashboard = (): JSX.Element => {
   const [shouldFetchData, setShouldFetchData] = useState(true);
-  const callEndpoint = useApi();
+  const callEndpoint = useApi(Endpoint.FindAllWines);
 
   const loading = useAppSelector(
     (state) => state.fetchingData[Endpoint.FindAllWines]
@@ -19,7 +19,7 @@ const Dashboard = (): JSX.Element => {
 
   useEffect(() => {
     if (shouldFetchData && !loading) {
-      callEndpoint(Endpoint.FindAllWines);
+      callEndpoint();
       setShouldFetchData(false);
     }
   }, [shouldFetchData, loading, callEndpoint]);
