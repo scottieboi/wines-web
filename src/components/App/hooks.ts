@@ -9,7 +9,7 @@ import { getAllWines, getWineById } from "../../api/callApi";
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-export function useApi<T extends EndpointName>(endpoint: T) {
+export function useApi(endpoint: EndpointName) {
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.token);
   const callEndpoint = (queryParams?: Record<string, string>) => {
@@ -46,23 +46,25 @@ export function useApi<T extends EndpointName>(endpoint: T) {
   return callEndpoint;
 }
 
-// export function useApiWithoutStore() {
-//   const token = useAppSelector((state) => state.token);
+export function useApiWithoutStore(endpoint: EndpointName) {
+  const token = useAppSelector((state) => state.token);
 
-//   const callEndpoint = (
-//     endpoint: Endpoint,
-//     queryParams?: Record<string, string>
-//   ) => {
-//     if (token) {
-//       dispatch(fetchData({ endpoint }));
-//       callApi({ token, endpoint, queryParams }).then((response) => {
-//         dispatch(updateData({ endpoint, data: response.data }));
-//       });
-//     }
-//   };
+  const callEndpoint = async (queryParams?: Record<string, string>) => {
+    if (token) {
+      // eslint-disable-next-line default-case
+      switch (endpoint) {
+        case EndpointName.FindAllWines:
+          return (await getAllWines(token)).data;
 
-//   return callEndpoint;
-// }
+        case EndpointName.FindWineById:
+          return (await getWineById(token, queryParams ?? {})).data;
+      }
+    }
+    return Promise.resolve(() => ({}));
+  };
+
+  return callEndpoint;
+}
 
 export function useAuth() {
   const dispatch = useAppDispatch();
