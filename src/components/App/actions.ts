@@ -1,5 +1,6 @@
 import { createAction } from "@reduxjs/toolkit";
-import { AllWinesResponse, EndpointName, FindWineRespone } from "../../api";
+import { AllWinesResponse, FindWineRespone } from "../../api/apiResponses";
+import { EndpointName } from "../../api";
 
 export const saveToken = createAction(
   "SAVE_TOKEN",
