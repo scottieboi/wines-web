@@ -1,3 +1,7 @@
+export type Token = {
+  token: string;
+};
+
 export type AllWinesResponse = {
   id: number;
   wineName: string;
