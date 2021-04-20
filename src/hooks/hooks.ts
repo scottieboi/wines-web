@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { Token } from "../api";
-import { saveToken } from "../components/App/actions";
-import type { RootState, AppDispatch } from "../components/App/store";
+import { saveToken } from "../redux/actions";
+import type { RootState, AppDispatch } from "../redux/store";
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();

@@ -1,6 +1,6 @@
 import { EndpointName } from "../api";
 import { getAllWines } from "../api/callApi";
-import { fetchData, updateData } from "../components/App/actions";
+import { fetchData, updateData } from "../redux/actions";
 import { useAppDispatch, useAppSelector } from "./hooks";
 
 export default function useFindAllWines(): () => void {

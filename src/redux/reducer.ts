@@ -1,6 +1,6 @@
 import { createReducer } from "@reduxjs/toolkit";
-import { AllWinesResponse, FindWineRespone } from "../../api/apiResponses";
-import { EndpointName } from "../../api";
+import { AllWinesResponse, FindWineRespone } from "../api/apiResponses";
+import { EndpointName } from "../api";
 import { fetchData, saveToken, updateData } from "./actions";
 
 type State = {
