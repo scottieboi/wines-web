@@ -1,7 +1,4 @@
-import {
-  updateFindAllWines,
-  fetchFindAllWines,
-} from "../redux/slices/FindAllWines";
+import { updateFindAllWines, fetchFindAllWines } from "../redux/FindAllWines";
 import { getAllWines } from "../api/callApi";
 import { useAppDispatch, useAppSelector } from "./hooks";
 

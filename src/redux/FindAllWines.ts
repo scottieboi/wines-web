@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AllWinesResponse } from "../../api/apiResponses";
+import { AllWinesResponse } from "../api/apiResponses";
 
 interface FindAllWinesState {
   loading: boolean;
@@ -12,7 +12,7 @@ const initialState = {
   response: null,
 } as FindAllWinesState;
 
-const counterSlice = createSlice({
+const findAllWinesSlice = createSlice({
   name: "FindAllWines",
   initialState,
   reducers: {
@@ -26,5 +26,8 @@ const counterSlice = createSlice({
   },
 });
 
-export const { updateFindAllWines, fetchFindAllWines } = counterSlice.actions;
-export default counterSlice.reducer;
+export const {
+  updateFindAllWines,
+  fetchFindAllWines,
+} = findAllWinesSlice.actions;
+export default findAllWinesSlice.reducer;

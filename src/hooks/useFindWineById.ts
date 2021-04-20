@@ -1,7 +1,4 @@
-import {
-  fetchFindWineById,
-  updateFindWineById,
-} from "../redux/slices/FindWineById";
+import { fetchFindWineById, updateFindWineById } from "../redux/FindWineById";
 import { getWineById } from "../api/callApi";
 import { useAppDispatch, useAppSelector } from "./hooks";
 
