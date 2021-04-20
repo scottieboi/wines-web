@@ -1,7 +1,7 @@
 import { createReducer } from "@reduxjs/toolkit";
 import { AllWinesResponse, FindWineRespone } from "../api/apiResponses";
 import { EndpointName } from "../api";
-import { fetchData, saveToken, updateData } from "./actions";
+import { saveToken } from "./actions";
 
 type State = {
   token: string | null;
@@ -40,42 +40,7 @@ const initialState: State = {
 };
 
 export default createReducer(initialState, (builder) => {
-  builder
-    .addCase(saveToken, (state, action) => {
-      return { ...state, token: action.payload.token };
-    })
-    .addCase(updateData, (state, action) => {
-      switch (action.payload.endpoint) {
-        case EndpointName.FindAllWines:
-          return {
-            ...state,
-            findAllWinesResponse: action.payload
-              .data as Array<AllWinesResponse>,
-            fetchingData: {
-              ...state.fetchingData,
-              [action.payload.endpoint]: false,
-            },
-          };
-        case EndpointName.FindWineById:
-          return {
-            ...state,
-            findWineResponse: action.payload.data as FindWineRespone,
-            fetchingData: {
-              ...state.fetchingData,
-              [action.payload.endpoint]: false,
-            },
-          };
-        default:
-          return state;
-      }
-    })
-    .addCase(fetchData, (state, action) => {
-      return {
-        ...state,
-        fetchingData: {
-          ...state.fetchingData,
-          [action.payload.endpoint]: true,
-        },
-      };
-    });
+  builder.addCase(saveToken, (state, action) => {
+    return { ...state, token: action.payload.token };
+  });
 });

@@ -1,21 +1,18 @@
-import { EndpointName } from "../api";
+import {
+  fetchFindWineById,
+  updateFindWineById,
+} from "../redux/slices/FindWineById";
 import { getWineById } from "../api/callApi";
-import { fetchData, updateData } from "../redux/actions";
 import { useAppDispatch, useAppSelector } from "./hooks";
 
 export default function useFindWineById(): (id: number) => void {
   const dispatch = useAppDispatch();
-  const token = useAppSelector((state) => state.token);
+  const token = useAppSelector((state) => state.auth.token);
   const callEndpoint = (id: number) => {
     if (token) {
-      dispatch(fetchData({ endpoint: EndpointName.FindWineById }));
+      dispatch(fetchFindWineById());
       getWineById(token, id).then((response) => {
-        dispatch(
-          updateData({
-            endpoint: EndpointName.FindWineById,
-            data: response.data,
-          })
-        );
+        dispatch(updateFindWineById(response.data));
       });
     }
   };

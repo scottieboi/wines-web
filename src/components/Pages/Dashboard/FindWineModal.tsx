@@ -10,7 +10,6 @@ import {
 } from "@material-ui/core";
 import * as React from "react";
 import { useAppSelector } from "../../../hooks/hooks";
-import { EndpointName } from "../../../api";
 import { Loading } from "../../Common/Loading";
 
 interface FindWineModalProps {
@@ -37,10 +36,8 @@ const FindWineModal: React.FunctionComponent<FindWineModalProps> = (
   const { isOpen, onClose } = props;
   const classes = useStyles();
 
-  const loading = useAppSelector(
-    (state) => state.fetchingData[EndpointName.FindWineById]
-  );
-  const data = useAppSelector((state) => state.findWineResponse);
+  const loading = useAppSelector((state) => state.findWineById.loading);
+  const data = useAppSelector((state) => state.findWineById.response);
 
   return (
     <Dialog

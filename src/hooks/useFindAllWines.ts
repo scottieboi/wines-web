@@ -1,21 +1,18 @@
-import { EndpointName } from "../api";
+import {
+  updateFindAllWines,
+  fetchFindAllWines,
+} from "../redux/slices/FindAllWines";
 import { getAllWines } from "../api/callApi";
-import { fetchData, updateData } from "../redux/actions";
 import { useAppDispatch, useAppSelector } from "./hooks";
 
 export default function useFindAllWines(): () => void {
   const dispatch = useAppDispatch();
-  const token = useAppSelector((state) => state.token);
+  const token = useAppSelector((state) => state.auth.token);
   const callEndpoint = () => {
     if (token) {
-      dispatch(fetchData({ endpoint: EndpointName.FindAllWines }));
+      dispatch(fetchFindAllWines());
       getAllWines(token).then((response) => {
-        dispatch(
-          updateData({
-            endpoint: EndpointName.FindAllWines,
-            data: response.data,
-          })
-        );
+        dispatch(updateFindAllWines(response.data));
       });
     }
   };

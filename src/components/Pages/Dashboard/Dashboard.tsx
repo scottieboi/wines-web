@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Loading } from "../../Common/Loading";
-import { EndpointName } from "../../../api";
 import { Title } from "../../Common/Title";
 import AllWinesTable from "./AllWinesTable";
 import { useAppSelector } from "../../../hooks/hooks";
@@ -13,10 +12,8 @@ const Dashboard = (): JSX.Element => {
   const [shouldFetchData, setShouldFetchData] = useState(true);
   const callEndpoint = useFindAllWines();
 
-  const loading = useAppSelector(
-    (state) => state.fetchingData[EndpointName.FindAllWines]
-  );
-  const allWines = useAppSelector((state) => state.findAllWinesResponse);
+  const loading = useAppSelector((state) => state.findAllWines.loading);
+  const allWines = useAppSelector((state) => state.findAllWines.response);
 
   useEffect(() => {
     if (shouldFetchData && !loading) {
