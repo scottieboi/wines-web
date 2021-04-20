@@ -1,12 +1,12 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import mainReducer from "./Auth";
-import FindAllWines from "./FindAllWines";
-import FindWineById from "./FindWineById";
+import auth from "./auth";
+import findAllWines from "./findAllWines";
+import findWineById from "./findWineById";
 
 const reducer = combineReducers({
-  auth: mainReducer,
-  findAllWines: FindAllWines,
-  findWineById: FindWineById,
+  auth,
+  findAllWines,
+  findWineById,
 });
 
 export const store = configureStore({
