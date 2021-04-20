@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import { useAppSelector } from "./hooks";
+import { useAppSelector } from "../../hooks";
 import { Path } from "../../routing";
 import { AddWine, Dashboard, Login } from "../Pages";
 

@@ -10,9 +10,9 @@ export function getAllWines(
 
 export function getWineById(
   token: string,
-  queryParams: Record<string, string>
+  id: number
 ): Promise<AxiosResponse<FindWineRespone>> {
   return apiClient.get<FindWineRespone>("/wine", {
-    params: queryParams,
+    params: { id: id.toString() },
   });
 }

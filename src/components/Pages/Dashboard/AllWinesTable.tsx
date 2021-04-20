@@ -7,10 +7,9 @@ import {
   Link,
 } from "@material-ui/core";
 import * as React from "react";
-import { useApi } from "../../App/hooks";
-import { EndpointName } from "../../../api";
 import FindWineModal from "./FindWineModal";
 import { AllWinesResponse } from "../../../api/apiResponses";
+import useFindWineById from "../../../hooks/useFindWineById";
 
 interface AllWinesTableProps {
   data: Array<AllWinesResponse>;
@@ -20,14 +19,14 @@ const AllWinesTable: React.FunctionComponent<AllWinesTableProps> = (
   props: AllWinesTableProps
 ) => {
   const [isOpen, setOpen] = React.useState(false);
-  const callEndpoint = useApi(EndpointName.FindWineById);
+  const callEndpoint = useFindWineById();
 
   const onModalClose = () => {
     setOpen(false);
   };
   const onModalOpen = (id: number) => {
     setOpen(true);
-    callEndpoint({ id: id.toString() });
+    callEndpoint(id);
   };
 
   const { data } = props;

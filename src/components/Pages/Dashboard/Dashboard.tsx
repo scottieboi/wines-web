@@ -4,13 +4,14 @@ import { Loading } from "../../Common/Loading";
 import { EndpointName } from "../../../api";
 import { Title } from "../../Common/Title";
 import AllWinesTable from "./AllWinesTable";
-import { useApi, useAppSelector } from "../../App/hooks";
+import { useAppSelector } from "../../../hooks/hooks";
 import { Page } from "../../Common/Page";
 import { Tile } from "../../Common/Tile";
+import { useFindAllWines } from "../../../hooks";
 
 const Dashboard = (): JSX.Element => {
   const [shouldFetchData, setShouldFetchData] = useState(true);
-  const callEndpoint = useApi(EndpointName.FindAllWines);
+  const callEndpoint = useFindAllWines();
 
   const loading = useAppSelector(
     (state) => state.fetchingData[EndpointName.FindAllWines]
