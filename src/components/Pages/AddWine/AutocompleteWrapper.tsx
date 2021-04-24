@@ -1,11 +1,21 @@
 import * as React from "react";
 import { CircularProgress, TextField } from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import Autocomplete, {
+  createFilterOptions,
+} from "@material-ui/lab/Autocomplete";
+
+export type OptionType = {
+  name: string;
+  id?: number;
+  inputValue?: string;
+};
+
+const filter = createFilterOptions<OptionType>();
 
 interface AutocompleteWrapperProps {
   label: string;
   className?: string;
-  fetchOptions: (searchterm: string) => Promise<string[]>;
+  fetchOptions: () => Promise<OptionType[]>;
 }
 
 const AutocompleteWrapper: React.FunctionComponent<AutocompleteWrapperProps> = ({
@@ -13,8 +23,8 @@ const AutocompleteWrapper: React.FunctionComponent<AutocompleteWrapperProps> = (
   className,
   fetchOptions,
 }: AutocompleteWrapperProps) => {
-  const [userInput, setUserInput] = React.useState("");
-  const [options, setOptions] = React.useState<string[]>([]);
+  const [value, setValue] = React.useState<OptionType | null>(null);
+  const [options, setOptions] = React.useState<OptionType[]>([]);
   const [open, setOpen] = React.useState(false);
 
   const loading = open && options.length === 0;
@@ -28,7 +38,7 @@ const AutocompleteWrapper: React.FunctionComponent<AutocompleteWrapperProps> = (
 
     (async () => {
       if (active) {
-        const newOptions = await fetchOptions(userInput);
+        const newOptions = await fetchOptions();
         setOptions(newOptions);
       }
     })();
@@ -36,10 +46,28 @@ const AutocompleteWrapper: React.FunctionComponent<AutocompleteWrapperProps> = (
     return () => {
       active = false;
     };
-  }, [loading, fetchOptions, userInput]);
+  }, [loading, fetchOptions, value]);
 
   return (
     <Autocomplete
+      selectOnFocus
+      clearOnBlur
+      handleHomeEndKeys
+      value={value}
+      onChange={(e, newValue) => {
+        if (typeof newValue === "string") {
+          setValue({
+            name: newValue,
+          });
+        } else if (newValue && newValue.inputValue) {
+          // Create a new value from the user input
+          setValue({
+            name: newValue.inputValue,
+          });
+        } else {
+          setValue(newValue);
+        }
+      }}
       style={{ display: "inline-flex" }}
       className={className}
       options={options}
@@ -50,16 +78,37 @@ const AutocompleteWrapper: React.FunctionComponent<AutocompleteWrapperProps> = (
       onClose={() => {
         setOpen(false);
       }}
-      getOptionSelected={(option, value) => option === value}
-      getOptionLabel={(option) => option}
+      filterOptions={(unfilteredOptions, params) => {
+        const filtered = filter(unfilteredOptions, params);
+        if (params.inputValue !== "") {
+          filtered.push({
+            inputValue: params.inputValue,
+            name: `Add "${params.inputValue}"`,
+          });
+        }
+
+        return filtered;
+      }}
+      getOptionLabel={(option) => {
+        // Value selected with enter, right from the input
+        if (typeof option === "string") {
+          return option;
+        }
+        // Add "xxx" option created dynamically
+        if (option.inputValue) {
+          return option.inputValue;
+        }
+        // Regular option
+        return option.name;
+      }}
+      freeSolo
+      renderOption={(option) => option.name}
       loading={loading}
       renderInput={(params) => (
         <TextField
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...params}
           label={label}
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
           InputProps={{
             ...params.InputProps,
             endAdornment: (

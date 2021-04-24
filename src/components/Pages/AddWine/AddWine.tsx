@@ -10,7 +10,7 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import { Page } from "../../Common/Page";
 import { Tile } from "../../Common/Tile";
 import { Title } from "../../Common/Title";
-import AutocompleteWrapper from "./AutocompleteWrapper";
+import AutocompleteWrapper, { OptionType } from "./AutocompleteWrapper";
 import useFindVineyards from "../../../hooks/useFindVineyards";
 
 interface Location {
@@ -53,9 +53,11 @@ const AddWine = (): JSX.Element => {
   const classes = useStyles();
 
   const callFindVineyards = useFindVineyards();
-  const fetchVineyards = async (searchterm: string): Promise<string[]> => {
-    const response = await callFindVineyards(searchterm);
-    return response?.map((item) => item.vineyard) ?? [];
+  const fetchVineyards = async (): Promise<OptionType[]> => {
+    const response = await callFindVineyards();
+    return (
+      response?.map((item) => ({ name: item.vineyard, id: item.id })) ?? []
+    );
   };
 
   const handleAddLocation = () => {
@@ -157,7 +159,8 @@ const AddWine = (): JSX.Element => {
               </IconButton>
             </div>
             {locations.map((loc, index) => (
-              <div>
+              // eslint-disable-next-line react/no-array-index-key
+              <div key={index}>
                 {createLocationInputs(loc, index)}
                 {
                   // Add remove last item button
