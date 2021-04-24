@@ -19,3 +19,8 @@ export type FindWineRespone = {
   vintage: number;
   boxes: { [key: string]: number }[];
 };
+
+export type FindVineyardResponse = {
+  id: number;
+  vineyard: string;
+};

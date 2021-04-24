@@ -8,9 +8,10 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import { Page } from "../../Common/Page";
-import { Loading } from "../../Common/Loading";
 import { Tile } from "../../Common/Tile";
 import { Title } from "../../Common/Title";
+import AutocompleteWrapper from "./AutocompleteWrapper";
+import useFindVineyards from "../../../hooks/useFindVineyards";
 
 interface Location {
   boxno: number | undefined;
@@ -51,6 +52,12 @@ const AddWine = (): JSX.Element => {
   ]);
   const classes = useStyles();
 
+  const callFindVineyards = useFindVineyards();
+  const fetchVineyards = async (searchterm: string): Promise<string[]> => {
+    const response = await callFindVineyards(searchterm);
+    return response?.map((item) => item.vineyard) ?? [];
+  };
+
   const handleAddLocation = () => {
     setLocations([
       ...locations,
@@ -83,8 +90,6 @@ const AddWine = (): JSX.Element => {
     setLocations(newLocations);
   };
 
-  const handleTextInputChange = () => {};
-
   const createLocationInputs = (value: Location, index: number) => {
     return (
       <>
@@ -111,7 +116,11 @@ const AddWine = (): JSX.Element => {
         <form className={classes.form} noValidate autoComplete="off">
           <div className={classes.formGroup}>
             <TextField label="Wine name" className={classes.textField} />
-            <TextField label="Vineyard" className={classes.textField} />
+            <AutocompleteWrapper
+              label="Vineyard"
+              className={classes.textField}
+              fetchOptions={fetchVineyards}
+            />
             <TextField label="Wine type" className={classes.textField} />
             <TextField label="Region" className={classes.textField} />
             <TextField label="Vintage" className={classes.textField} />
@@ -172,22 +181,3 @@ const AddWine = (): JSX.Element => {
 };
 
 export default AddWine;
-
-// short? Vintage
-// string Winename
-// float? Percentalcohol
-// decimal? Pricepaid
-// short? Yearbought
-// short? Bottlesize
-// string Notes
-// short? Rating
-// short? Drinkrangefrom
-// short? Drinkrangeto
-
-// Region Region
-// Vineyard Vineyard
-// Winetype Winetype
-
-// ICollection<Location> Locations
-// Box No
-// Qty
