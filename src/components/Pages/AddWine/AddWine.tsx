@@ -1,5 +1,12 @@
 import * as React from "react";
-import { makeStyles, TextField } from "@material-ui/core";
+import {
+  IconButton,
+  makeStyles,
+  TextField,
+  Typography,
+} from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Remove";
 import { Page } from "../../Common/Page";
 import { Loading } from "../../Common/Loading";
 import { Tile } from "../../Common/Tile";
@@ -31,6 +38,9 @@ const useStyles = makeStyles((theme) => {
 });
 
 const AddWine = (): JSX.Element => {
+  const [locations, setLocations] = React.useState<
+    Array<Record<string, string>>
+  >([{}]);
   const classes = useStyles();
   const yearInputProps = {
     min: 1900,
@@ -40,6 +50,40 @@ const AddWine = (): JSX.Element => {
   const currencyInputProps = {
     min: 0,
     step: 0.01,
+  };
+  const locationInputProps = {
+    min: 1,
+  };
+
+  const createLocationInputs = (id: string) => {
+    return (
+      <>
+        <TextField
+          id={id}
+          label="Box no."
+          className={classes.textField}
+          type="number"
+          inputProps={locationInputProps}
+        />
+        <TextField
+          id={id}
+          label="Quantity"
+          className={classes.textField}
+          type="number"
+          inputProps={locationInputProps}
+        />
+      </>
+    );
+  };
+
+  const handleAddLocation = () => {
+    setLocations([...locations, {}]);
+  };
+
+  const handleRemoveLocation = () => {
+    if (locations.length > 1) {
+      setLocations([...locations].slice(0, -1));
+    }
   };
 
   return (
@@ -95,6 +139,32 @@ const AddWine = (): JSX.Element => {
             <Title subtitle className={classes.formGroupTitle}>
               Location in cellar
             </Title>
+            <div>
+              <IconButton
+                color="inherit"
+                aria-label="add a location"
+                onClick={handleAddLocation}
+              >
+                <AddIcon />
+                <Typography variant="body1" component="span">
+                  Add a new location
+                </Typography>
+              </IconButton>
+            </div>
+            {locations.map((loc, index) => (
+              <div>
+                {createLocationInputs(index.toString())}
+                {index === locations.length - 1 && (
+                  <IconButton
+                    color="inherit"
+                    aria-label="remove last location"
+                    onClick={handleRemoveLocation}
+                  >
+                    <RemoveIcon />
+                  </IconButton>
+                )}
+              </div>
+            ))}
           </div>
         </form>
       </Tile>
