@@ -1,21 +1,15 @@
 import * as React from "react";
-import {
-  IconButton,
-  makeStyles,
-  TextField,
-  Typography,
-} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import RemoveIcon from "@material-ui/icons/Remove";
+import { makeStyles, TextField } from "@material-ui/core";
 import { Page } from "../../Common/Page";
 import { Tile } from "../../Common/Tile";
 import { Title } from "../../Common/Title";
 import AutocompleteWrapper, { OptionType } from "./AutocompleteWrapper";
 import useFindVineyards from "../../../hooks/useFindVineyards";
+import LocationControl from "./LocationControl";
 
 interface Location {
-  boxno: number | undefined;
-  qty: number | undefined;
+  boxno: number | "";
+  qty: number | "";
 }
 
 const useStyles = makeStyles((theme) => {
@@ -46,8 +40,8 @@ const useStyles = makeStyles((theme) => {
 const AddWine = (): JSX.Element => {
   const [locations, setLocations] = React.useState<Array<Location>>([
     {
-      qty: undefined,
-      boxno: undefined,
+      qty: "",
+      boxno: "",
     },
   ]);
   const classes = useStyles();
@@ -57,57 +51,6 @@ const AddWine = (): JSX.Element => {
     const response = await callFindVineyards();
     return (
       response?.map((item) => ({ name: item.vineyard, id: item.id })) ?? []
-    );
-  };
-
-  const handleAddLocation = () => {
-    setLocations([
-      ...locations,
-      {
-        qty: undefined,
-        boxno: undefined,
-      },
-    ]);
-  };
-
-  const handleRemoveLocation = () => {
-    if (locations.length > 1) {
-      setLocations([...locations].slice(0, -1));
-    }
-  };
-
-  const handleLocationChange = (
-    type: "boxno" | "qty",
-    newValue: string,
-    locationId: number
-  ) => {
-    const newLocations = [...locations];
-    const parsedNewValue = newValue === "" ? "" : Number.parseInt(newValue, 10);
-    newLocations[locationId] = {
-      ...locations[locationId],
-      [type]: !Number.isNaN(parsedNewValue)
-        ? parsedNewValue
-        : locations[locationId][type],
-    };
-    setLocations(newLocations);
-  };
-
-  const createLocationInputs = (value: Location, index: number) => {
-    return (
-      <>
-        <TextField
-          value={value.boxno}
-          onChange={(e) => handleLocationChange("boxno", e.target.value, index)}
-          label="Box no."
-          className={classes.textField}
-        />
-        <TextField
-          value={value.qty}
-          onChange={(e) => handleLocationChange("qty", e.target.value, index)}
-          label="Quantity"
-          className={classes.textField}
-        />
-      </>
     );
   };
 
@@ -146,36 +89,11 @@ const AddWine = (): JSX.Element => {
             <Title subtitle className={classes.formGroupTitle}>
               Location in cellar
             </Title>
-            <div>
-              <IconButton
-                color="inherit"
-                aria-label="add a location"
-                onClick={handleAddLocation}
-              >
-                <AddIcon />
-                <Typography variant="body1" component="span">
-                  Add a new location
-                </Typography>
-              </IconButton>
-            </div>
-            {locations.map((loc, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <div key={index}>
-                {createLocationInputs(loc, index)}
-                {
-                  // Add remove last item button
-                  index === locations.length - 1 && (
-                    <IconButton
-                      color="inherit"
-                      aria-label="remove last location"
-                      onClick={handleRemoveLocation}
-                    >
-                      <RemoveIcon />
-                    </IconButton>
-                  )
-                }
-              </div>
-            ))}
+            <LocationControl
+              locations={locations}
+              updateLocations={setLocations}
+              textFieldClassName={classes.textField}
+            />
           </div>
         </form>
       </Tile>
