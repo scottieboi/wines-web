@@ -10,17 +10,17 @@ export interface Location {
 
 interface LocationControlProps {
   locations: Location[];
-  updateLocations: (locations: Location[]) => void;
+  onUpdateLocations: (locations: Location[]) => void;
   textFieldClassName?: string;
 }
 
 const LocationControl: React.FunctionComponent<LocationControlProps> = ({
   locations,
-  updateLocations,
+  onUpdateLocations,
   textFieldClassName,
 }: LocationControlProps): JSX.Element => {
   const handleAddLocation = () => {
-    updateLocations([
+    onUpdateLocations([
       ...locations,
       {
         qty: "",
@@ -31,7 +31,7 @@ const LocationControl: React.FunctionComponent<LocationControlProps> = ({
 
   const handleRemoveLocation = () => {
     if (locations.length > 1) {
-      updateLocations([...locations].slice(0, -1));
+      onUpdateLocations([...locations].slice(0, -1));
     }
   };
 
@@ -48,7 +48,7 @@ const LocationControl: React.FunctionComponent<LocationControlProps> = ({
         ? parsedNewValue
         : locations[locationId][type],
     };
-    updateLocations(newLocations);
+    onUpdateLocations(newLocations);
   };
 
   const createLocationInputs = (value: Location, index: number) => {

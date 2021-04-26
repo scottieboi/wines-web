@@ -113,7 +113,7 @@ const AddWine = (): JSX.Element => {
             </Title>
             <LocationControl
               locations={locations}
-              updateLocations={setLocations}
+              onUpdateLocations={setLocations}
               textFieldClassName={classes.textField}
             />
           </div>
