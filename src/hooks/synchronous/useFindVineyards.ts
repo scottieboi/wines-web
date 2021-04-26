@@ -1,6 +1,6 @@
-import { getVineyards } from "../api/callApi";
-import { useAppSelector } from "./hooks";
-import { FindVineyardResponse } from "../api/apiResponses";
+import { getVineyards } from "../../api/callApi";
+import { useAppSelector } from "../hooks";
+import { FindVineyardResponse } from "../../api/apiResponses";
 
 export default function useFindVineyards(): (
   searchterm?: string

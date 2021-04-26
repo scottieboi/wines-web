@@ -2,8 +2,10 @@ import { AxiosResponse } from "axios";
 import { apiClient } from "./apiClient";
 import {
   AllWinesResponse,
+  FindRegionResponse,
   FindVineyardResponse,
   FindWineRespone,
+  FindWineTypeResponse,
 } from "./apiResponses";
 
 export function getAllWines(
@@ -26,6 +28,24 @@ export function getVineyards(
   searchterm: string
 ): Promise<AxiosResponse<Array<FindVineyardResponse>>> {
   return apiClient.get<Array<FindVineyardResponse>>("/vineyard", {
+    params: { searchterm },
+  });
+}
+
+export function getRegions(
+  token: string,
+  searchterm: string
+): Promise<AxiosResponse<Array<FindRegionResponse>>> {
+  return apiClient.get<Array<FindRegionResponse>>("/region", {
+    params: { searchterm },
+  });
+}
+
+export function getWineTypes(
+  token: string,
+  searchterm: string
+): Promise<AxiosResponse<Array<FindWineTypeResponse>>> {
+  return apiClient.get<Array<FindWineTypeResponse>>("/winetype", {
     params: { searchterm },
   });
 }

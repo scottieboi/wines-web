@@ -4,7 +4,7 @@ import { Page } from "../../Common/Page";
 import { Tile } from "../../Common/Tile";
 import { Title } from "../../Common/Title";
 import AutocompleteWrapper, { OptionType } from "./AutocompleteWrapper";
-import useFindVineyards from "../../../hooks/useFindVineyards";
+import { useFindVineyards } from "../../../hooks";
 import LocationControl from "./LocationControl";
 
 interface Location {

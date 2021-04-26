@@ -1,6 +1,9 @@
-import { fetchFindWineById, updateFindWineById } from "../redux/findWineById";
-import { getWineById } from "../api/callApi";
-import { useAppDispatch, useAppSelector } from "./hooks";
+import {
+  fetchFindWineById,
+  updateFindWineById,
+} from "../../redux/findWineById";
+import { getWineById } from "../../api/callApi";
+import { useAppDispatch, useAppSelector } from "../hooks";
 
 export default function useFindWineById(): (id: number) => void {
   const dispatch = useAppDispatch();
