@@ -3,14 +3,13 @@ import { makeStyles, TextField } from "@material-ui/core";
 import { Page } from "../../Common/Page";
 import { Tile } from "../../Common/Tile";
 import { Title } from "../../Common/Title";
-import AutocompleteWrapper, { OptionType } from "./AutocompleteWrapper";
-import { useFindVineyards } from "../../../hooks";
-import LocationControl from "./LocationControl";
-
-interface Location {
-  boxno: number | "";
-  qty: number | "";
-}
+import AutocompleteControl, { OptionType } from "./AutocompleteControl";
+import {
+  useFindRegions,
+  useFindVineyards,
+  useFindWineTypes,
+} from "../../../hooks";
+import LocationControl, { Location } from "./LocationControl";
 
 const useStyles = makeStyles((theme) => {
   const textFieldMargin = theme.spacing(1);
@@ -27,7 +26,7 @@ const useStyles = makeStyles((theme) => {
     textField: {
       marginLeft: textFieldMargin,
       marginRight: textFieldMargin,
-      width: "25ch",
+      width: "30ch",
     },
     notesField: {
       marginLeft: textFieldMargin,
@@ -38,13 +37,14 @@ const useStyles = makeStyles((theme) => {
 });
 
 const AddWine = (): JSX.Element => {
-  const [locations, setLocations] = React.useState<Array<Location>>([
+  const classes = useStyles();
+
+  const [locations, setLocations] = React.useState<Location[]>([
     {
       qty: "",
       boxno: "",
     },
   ]);
-  const classes = useStyles();
 
   const callFindVineyards = useFindVineyards();
   const fetchVineyards = async (): Promise<OptionType[]> => {
@@ -54,6 +54,20 @@ const AddWine = (): JSX.Element => {
     );
   };
 
+  const callFindWineTypes = useFindWineTypes();
+  const fetchWineTypes = async (): Promise<OptionType[]> => {
+    const response = await callFindWineTypes();
+    return (
+      response?.map((item) => ({ name: item.wineType, id: item.id })) ?? []
+    );
+  };
+
+  const callFindRegions = useFindRegions();
+  const fetchRegions = async (): Promise<OptionType[]> => {
+    const response = await callFindRegions();
+    return response?.map((item) => ({ name: item.region, id: item.id })) ?? [];
+  };
+
   return (
     <Page titleText="Add a wine">
       <Tile>
@@ -61,13 +75,21 @@ const AddWine = (): JSX.Element => {
         <form className={classes.form} noValidate autoComplete="off">
           <div className={classes.formGroup}>
             <TextField label="Wine name" className={classes.textField} />
-            <AutocompleteWrapper
+            <AutocompleteControl
               label="Vineyard"
               className={classes.textField}
               fetchOptions={fetchVineyards}
             />
-            <TextField label="Wine type" className={classes.textField} />
-            <TextField label="Region" className={classes.textField} />
+            <AutocompleteControl
+              label="Wine type"
+              className={classes.textField}
+              fetchOptions={fetchWineTypes}
+            />
+            <AutocompleteControl
+              label="Region"
+              className={classes.textField}
+              fetchOptions={fetchRegions}
+            />
             <TextField label="Vintage" className={classes.textField} />
           </div>
           <div className={classes.formGroup}>

@@ -78,7 +78,7 @@ const LocationControl: React.FunctionComponent<LocationControlProps> = ({
           aria-label="add a location"
           onClick={handleAddLocation}
         >
-          <AddIcon />
+          <AddIcon style={{ marginRight: "0.5em" }} />
           <Typography variant="body1" component="span">
             Add a new location
           </Typography>

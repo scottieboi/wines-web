@@ -12,17 +12,17 @@ export type OptionType = {
 
 const filter = createFilterOptions<OptionType>();
 
-interface AutocompleteWrapperProps {
+interface AutocompleteControlProps {
   label: string;
   className?: string;
   fetchOptions: () => Promise<OptionType[]>;
 }
 
-const AutocompleteWrapper: React.FunctionComponent<AutocompleteWrapperProps> = ({
+const AutocompleteControl: React.FunctionComponent<AutocompleteControlProps> = ({
   label,
   className,
   fetchOptions,
-}: AutocompleteWrapperProps) => {
+}: AutocompleteControlProps) => {
   const [value, setValue] = React.useState<OptionType | null>(null);
   const [options, setOptions] = React.useState<OptionType[]>([]);
   const [open, setOpen] = React.useState(false);
@@ -124,8 +124,8 @@ const AutocompleteWrapper: React.FunctionComponent<AutocompleteWrapperProps> = (
   );
 };
 
-AutocompleteWrapper.defaultProps = {
+AutocompleteControl.defaultProps = {
   className: undefined,
 };
 
-export default AutocompleteWrapper;
+export default AutocompleteControl;
