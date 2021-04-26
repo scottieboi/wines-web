@@ -15,15 +15,18 @@ const filter = createFilterOptions<OptionType>();
 interface AutocompleteControlProps {
   label: string;
   className?: string;
-  fetchOptions: () => Promise<OptionType[]>;
+  onFetchOptions: () => Promise<OptionType[]>;
+  value: OptionType | null;
+  onUpdateValue: (value: OptionType | null) => void;
 }
 
 const AutocompleteControl: React.FunctionComponent<AutocompleteControlProps> = ({
   label,
   className,
-  fetchOptions,
+  onFetchOptions,
+  value,
+  onUpdateValue,
 }: AutocompleteControlProps) => {
-  const [value, setValue] = React.useState<OptionType | null>(null);
   const [options, setOptions] = React.useState<OptionType[]>([]);
   const [open, setOpen] = React.useState(false);
 
@@ -38,7 +41,7 @@ const AutocompleteControl: React.FunctionComponent<AutocompleteControlProps> = (
 
     (async () => {
       if (active) {
-        const newOptions = await fetchOptions();
+        const newOptions = await onFetchOptions();
         setOptions(newOptions);
       }
     })();
@@ -46,7 +49,7 @@ const AutocompleteControl: React.FunctionComponent<AutocompleteControlProps> = (
     return () => {
       active = false;
     };
-  }, [loading, fetchOptions, value]);
+  }, [loading, onFetchOptions, value]);
 
   return (
     <Autocomplete
@@ -56,16 +59,16 @@ const AutocompleteControl: React.FunctionComponent<AutocompleteControlProps> = (
       value={value}
       onChange={(e, newValue) => {
         if (typeof newValue === "string") {
-          setValue({
+          onUpdateValue({
             name: newValue,
           });
         } else if (newValue && newValue.inputValue) {
           // Create a new value from the user input
-          setValue({
+          onUpdateValue({
             name: newValue.inputValue,
           });
         } else {
-          setValue(newValue);
+          onUpdateValue(newValue);
         }
       }}
       style={{ display: "inline-flex" }}

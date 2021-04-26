@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => {
 const AddWine = (): JSX.Element => {
   const classes = useStyles();
 
+  const [wineType, setWineType] = React.useState<OptionType | null>(null);
+  const [vineyard, setVinyard] = React.useState<OptionType | null>(null);
+  const [region, setRegion] = React.useState<OptionType | null>(null);
   const [locations, setLocations] = React.useState<Location[]>([
     {
       qty: "",
@@ -78,17 +81,23 @@ const AddWine = (): JSX.Element => {
             <AutocompleteControl
               label="Vineyard"
               className={classes.textField}
-              fetchOptions={fetchVineyards}
+              onFetchOptions={fetchVineyards}
+              value={vineyard}
+              onUpdateValue={setVinyard}
             />
             <AutocompleteControl
               label="Wine type"
               className={classes.textField}
-              fetchOptions={fetchWineTypes}
+              onFetchOptions={fetchWineTypes}
+              value={wineType}
+              onUpdateValue={setWineType}
             />
             <AutocompleteControl
               label="Region"
               className={classes.textField}
-              fetchOptions={fetchRegions}
+              onFetchOptions={fetchRegions}
+              value={region}
+              onUpdateValue={setRegion}
             />
             <TextField label="Vintage" className={classes.textField} />
           </div>
