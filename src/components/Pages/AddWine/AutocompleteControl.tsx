@@ -18,6 +18,9 @@ interface AutocompleteControlProps {
   onFetchOptions: () => Promise<OptionType[]>;
   value: OptionType | null;
   onUpdateValue: (value: OptionType | null) => void;
+  required?: boolean;
+  error?: boolean;
+  helperText?: string;
 }
 
 const AutocompleteControl: React.FunctionComponent<AutocompleteControlProps> = ({
@@ -26,6 +29,9 @@ const AutocompleteControl: React.FunctionComponent<AutocompleteControlProps> = (
   onFetchOptions,
   value,
   onUpdateValue,
+  required,
+  error,
+  helperText,
 }: AutocompleteControlProps) => {
   const [options, setOptions] = React.useState<OptionType[]>([]);
   const [open, setOpen] = React.useState(false);
@@ -111,6 +117,9 @@ const AutocompleteControl: React.FunctionComponent<AutocompleteControlProps> = (
         <TextField
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...params}
+          required={required}
+          error={error}
+          helperText={helperText}
           label={label}
           InputProps={{
             ...params.InputProps,
@@ -129,6 +138,9 @@ const AutocompleteControl: React.FunctionComponent<AutocompleteControlProps> = (
 
 AutocompleteControl.defaultProps = {
   className: undefined,
+  required: false,
+  error: false,
+  helperText: undefined,
 };
 
 export default AutocompleteControl;

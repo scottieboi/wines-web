@@ -9,7 +9,7 @@ import {
 import * as React from "react";
 import FindWineModal from "./FindWineModal";
 import { AllWinesResponse } from "../../../api/apiResponses";
-import { useFindWineById } from "../../../hooks";
+import { useFindWineById } from "../../../hooks/withRedux";
 
 interface AllWinesTableProps {
   data: Array<AllWinesResponse>;

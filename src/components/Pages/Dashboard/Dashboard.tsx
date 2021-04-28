@@ -6,7 +6,7 @@ import AllWinesTable from "./AllWinesTable";
 import { useAppSelector } from "../../../hooks/hooks";
 import { Page } from "../../Common/Page";
 import { Tile } from "../../Common/Tile";
-import { useFindAllWines } from "../../../hooks";
+import { useFindAllWines } from "../../../hooks/withRedux";
 
 const Dashboard = (): JSX.Element => {
   const [shouldFetchData, setShouldFetchData] = useState(true);

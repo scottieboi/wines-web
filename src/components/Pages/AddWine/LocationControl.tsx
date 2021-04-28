@@ -55,12 +55,14 @@ const LocationControl: React.FunctionComponent<LocationControlProps> = ({
     return (
       <>
         <TextField
+          required
           value={value.boxno}
           onChange={(e) => handleLocationChange("boxno", e.target.value, index)}
           label="Box no."
           className={textFieldClassName}
         />
         <TextField
+          required
           value={value.qty}
           onChange={(e) => handleLocationChange("qty", e.target.value, index)}
           label="Quantity"
