@@ -15,14 +15,9 @@ import {
   useFindWineTypes,
 } from "../../../hooks/synchronous";
 import LocationControl, { Location } from "./LocationControl";
-
-interface ValidationMessages {
-  wineName?: string;
-  vineyard?: string;
-  wineType?: string;
-  region?: string;
-  vintage?: string;
-}
+import { FormData } from "./FormData";
+import { ValidationMessages } from "./ValidationMessages";
+import { validateFormData } from "./validateFormData";
 
 const useStyles = makeStyles((theme) => {
   const textFieldMargin = theme.spacing(1);
@@ -55,30 +50,27 @@ const useStyles = makeStyles((theme) => {
 const AddWine = (): JSX.Element => {
   const classes = useStyles();
 
-  const [wineName, setWineName] = React.useState<string>("");
-  const [notes, setNotes] = React.useState<string>("");
-  const [vintage, setVintage] = React.useState<number | "">("");
-  const [yearBought, setYearBought] = React.useState<number | "">("");
-  const [drinkFrom, setDrinkFrom] = React.useState<number | "">("");
-  const [drinkTo, setDrinkTo] = React.useState<number | "">("");
-  const [pricePaid, setPricePaid] = React.useState<string>("");
-  const [rating, setRating] = React.useState<number | "">("");
-  const [bottleSize, setBottleSize] = React.useState<number | "">("");
-  const [wineType, setWineType] = React.useState<OptionType | null>(null);
-  const [vineyard, setVinyard] = React.useState<OptionType | null>(null);
-  const [region, setRegion] = React.useState<OptionType | null>(null);
-  const [locations, setLocations] = React.useState<Location[]>([
-    {
-      qty: "",
-      boxno: "",
-    },
-  ]);
-
+  const [formData, setFormData] = React.useState<FormData>({
+    wineName: "",
+    notes: "",
+    vintage: "",
+    yearBought: "",
+    drinkFrom: "",
+    drinkTo: "",
+    pricePaid: "",
+    rating: "",
+    bottleSize: "",
+    wineType: null,
+    vineyard: null,
+    region: null,
+    locations: [{ qty: "", boxno: "" }],
+  });
   const [saving, setSaving] = React.useState(false);
   const [errorMessages, setErrorMessages] = React.useState<ValidationMessages>(
     {}
   );
 
+  // ___ Fetch autocomplete data ___
   const callFindVineyards = useFindVineyards();
   const fetchVineyards = async (): Promise<OptionType[]> => {
     const response = await callFindVineyards();
@@ -101,34 +93,17 @@ const AddWine = (): JSX.Element => {
     return response?.map((item) => ({ name: item.region, id: item.id })) ?? [];
   };
 
+  // ___ onChangeHandlers ___
   const handleYearChange = (
-    type: "vintage" | "yearbought" | "drinkfrom" | "drinkto",
+    type: "vintage" | "yearBought" | "drinkFrom" | "drinkTo",
     newValue: string
   ) => {
-    setErrorMessages({
-      ...errorMessages,
-      [type]: undefined,
-    });
+    setErrorMessages({ ...errorMessages, [type]: undefined });
     const parsedNewValue = newValue === "" ? "" : Number.parseInt(newValue, 10);
 
     // Is a 4 digit year
     if (parsedNewValue === "" || /^\d{0,4}$/.test(newValue)) {
-      // eslint-disable-next-line default-case
-      switch (type) {
-        case "vintage":
-          // Reset error
-          setVintage(parsedNewValue);
-          break;
-        case "yearbought":
-          setYearBought(parsedNewValue);
-          break;
-        case "drinkfrom":
-          setDrinkFrom(parsedNewValue);
-          break;
-        case "drinkto":
-          setDrinkTo(parsedNewValue);
-          break;
-      }
+      setFormData({ ...formData, [type]: parsedNewValue });
     }
   };
 
@@ -136,34 +111,14 @@ const AddWine = (): JSX.Element => {
     type: "wineName" | "vineyard" | "wineType" | "region" | "notes",
     newValue: string | OptionType | null
   ) => {
-    setErrorMessages({
-      ...errorMessages,
-      [type]: undefined,
-    });
-    // eslint-disable-next-line default-case
-    switch (type) {
-      case "wineName":
-        setWineName(newValue as string);
-        break;
-      case "vineyard":
-        setVinyard(newValue as OptionType | null);
-        break;
-      case "wineType":
-        setWineType(newValue as OptionType | null);
-        break;
-      case "region":
-        setRegion(newValue as OptionType | null);
-        break;
-      case "notes":
-        setNotes(newValue as string);
-        break;
-    }
+    setErrorMessages({ ...errorMessages, [type]: undefined });
+    setFormData({ ...formData, [type]: newValue });
   };
 
   const handlePricePaidChange = (newValue: string) => {
     // 0 or 0.00 or .00
     if (newValue === "" || /^\d*\.?\d{0,2}$/.test(newValue)) {
-      setPricePaid(newValue);
+      setFormData({ ...formData, pricePaid: newValue });
     }
   };
 
@@ -172,63 +127,30 @@ const AddWine = (): JSX.Element => {
 
     // Rating is whole number between 0 and 100 (ideally)
     if (parsedNewValue === "" || /^\d{0,3}$/.test(newValue)) {
-      setRating(parsedNewValue);
+      setFormData({ ...formData, rating: parsedNewValue });
     }
   };
 
-  const handleBottleSize = (newValue: string) => {
+  const handleBottleSizeChange = (newValue: string) => {
     const parsedNewValue = newValue === "" ? "" : Number.parseInt(newValue, 10);
     if (parsedNewValue === "" || !Number.isNaN(parsedNewValue)) {
-      setBottleSize(parsedNewValue);
+      setFormData({ ...formData, bottleSize: parsedNewValue });
     }
   };
 
+  const handleLocationsChange = (locations: Location[]) => {
+    setFormData({
+      ...formData,
+      locations,
+    });
+  };
+
+  // ___ onSave handler ___
   const handleSave = () => {
-    let hasErrors = false;
-    let newErrorMessages: ValidationMessages = {};
-    // Required fields
-    if (!wineName) {
-      hasErrors = true;
-      newErrorMessages = {
-        ...newErrorMessages,
-        wineName: "Missing required field",
-      };
-    }
-
-    if (!vineyard?.name) {
-      hasErrors = true;
-      newErrorMessages = {
-        ...newErrorMessages,
-        vineyard: "Missing required field",
-      };
-    }
-
-    if (!wineType?.name) {
-      hasErrors = true;
-      newErrorMessages = {
-        ...newErrorMessages,
-        wineType: "Missing required field",
-      };
-    }
-
-    if (!region?.name) {
-      hasErrors = true;
-      newErrorMessages = {
-        ...newErrorMessages,
-        region: "Missing required field",
-      };
-    }
-
-    if (!vintage) {
-      hasErrors = true;
-      newErrorMessages = {
-        ...newErrorMessages,
-        vintage: "Missing required field",
-      };
-    }
-
+    const newErrorMessages = validateFormData(formData);
     setErrorMessages(newErrorMessages);
-    if (!hasErrors) {
+
+    if (Object.keys(newErrorMessages).length === 0) {
       setSaving(true);
     }
   };
@@ -245,7 +167,7 @@ const AddWine = (): JSX.Element => {
               helperText={errorMessages.wineName}
               label="Wine name"
               className={classes.textField}
-              value={wineName}
+              value={formData.wineName}
               onChange={(e) => handleTextChange("wineName", e.target.value)}
             />
             <AutocompleteControl
@@ -255,7 +177,7 @@ const AddWine = (): JSX.Element => {
               label="Vineyard"
               className={classes.textField}
               onFetchOptions={fetchVineyards}
-              value={vineyard}
+              value={formData.vineyard}
               onUpdateValue={(value) => handleTextChange("vineyard", value)}
             />
             <AutocompleteControl
@@ -265,7 +187,7 @@ const AddWine = (): JSX.Element => {
               label="Wine type"
               className={classes.textField}
               onFetchOptions={fetchWineTypes}
-              value={wineType}
+              value={formData.wineType}
               onUpdateValue={(value) => handleTextChange("wineType", value)}
             />
             <AutocompleteControl
@@ -275,7 +197,7 @@ const AddWine = (): JSX.Element => {
               label="Region"
               className={classes.textField}
               onFetchOptions={fetchRegions}
-              value={region}
+              value={formData.region}
               onUpdateValue={(value) => handleTextChange("region", value)}
             />
             <TextField
@@ -284,7 +206,7 @@ const AddWine = (): JSX.Element => {
               helperText={errorMessages.vintage}
               label="Vintage"
               className={classes.textField}
-              value={vintage}
+              value={formData.vintage}
               onChange={(e) => handleYearChange("vintage", e.target.value)}
             />
           </div>
@@ -295,44 +217,44 @@ const AddWine = (): JSX.Element => {
             <TextField
               label="Year bought"
               className={classes.textField}
-              value={yearBought}
-              onChange={(e) => handleYearChange("yearbought", e.target.value)}
+              value={formData.yearBought}
+              onChange={(e) => handleYearChange("yearBought", e.target.value)}
             />
             <TextField
               label="Drink from (year)"
               className={classes.textField}
-              value={drinkFrom}
-              onChange={(e) => handleYearChange("drinkfrom", e.target.value)}
+              value={formData.drinkFrom}
+              onChange={(e) => handleYearChange("drinkFrom", e.target.value)}
             />
             <TextField
               label="Drink to (year)"
               className={classes.textField}
-              value={drinkTo}
-              onChange={(e) => handleYearChange("drinkto", e.target.value)}
+              value={formData.drinkTo}
+              onChange={(e) => handleYearChange("drinkTo", e.target.value)}
             />
             <TextField
               label="Price paid"
               className={classes.textField}
-              value={pricePaid}
+              value={formData.pricePaid}
               onChange={(e) => handlePricePaidChange(e.target.value)}
             />
             <TextField
               label="Rating"
               className={classes.textField}
-              value={rating}
+              value={formData.rating}
               onChange={(e) => handleRatingChange(e.target.value)}
             />
             <TextField
               label="Bottle size"
               className={classes.textField}
-              value={bottleSize}
-              onChange={(e) => handleBottleSize(e.target.value)}
+              value={formData.bottleSize}
+              onChange={(e) => handleBottleSizeChange(e.target.value)}
             />
             <TextField
               label="Notes"
               multiline
               className={classes.notesField}
-              value={notes}
+              value={formData.notes}
               onChange={(e) => handleTextChange("notes", e.target.value)}
             />
           </div>
@@ -341,8 +263,9 @@ const AddWine = (): JSX.Element => {
               Location in cellar
             </Title>
             <LocationControl
-              locations={locations}
-              onUpdateLocations={setLocations}
+              locations={formData.locations}
+              validationMessages={errorMessages.locations}
+              onUpdateLocations={handleLocationsChange}
               textFieldClassName={classes.textField}
             />
           </div>

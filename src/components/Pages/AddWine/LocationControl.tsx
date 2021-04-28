@@ -2,6 +2,7 @@ import * as React from "react";
 import { IconButton, TextField, Typography } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
+import { LocationValidationMessages } from "./ValidationMessages";
 
 export interface Location {
   boxno: number | "";
@@ -12,12 +13,14 @@ interface LocationControlProps {
   locations: Location[];
   onUpdateLocations: (locations: Location[]) => void;
   textFieldClassName?: string;
+  validationMessages?: LocationValidationMessages[];
 }
 
 const LocationControl: React.FunctionComponent<LocationControlProps> = ({
   locations,
   onUpdateLocations,
   textFieldClassName,
+  validationMessages,
 }: LocationControlProps): JSX.Element => {
   const handleAddLocation = () => {
     onUpdateLocations([
@@ -44,17 +47,30 @@ const LocationControl: React.FunctionComponent<LocationControlProps> = ({
     const parsedNewValue = newValue === "" ? "" : Number.parseInt(newValue, 10);
     newLocations[locationId] = {
       ...locations[locationId],
-      [type]: !Number.isNaN(parsedNewValue)
-        ? parsedNewValue
-        : locations[locationId][type],
+      [type]:
+        !Number.isNaN(parsedNewValue) && parsedNewValue !== 0
+          ? parsedNewValue
+          : locations[locationId][type],
     };
     onUpdateLocations(newLocations);
   };
 
   const createLocationInputs = (value: Location, index: number) => {
+    const boxnoErrorText =
+      validationMessages && validationMessages[index]
+        ? validationMessages[index].boxno
+        : undefined;
+
+    const qtyErrorText =
+      validationMessages && validationMessages[index]
+        ? validationMessages[index].qty
+        : undefined;
+
     return (
       <>
         <TextField
+          error={!!boxnoErrorText}
+          helperText={boxnoErrorText}
           required
           value={value.boxno}
           onChange={(e) => handleLocationChange("boxno", e.target.value, index)}
@@ -62,6 +78,8 @@ const LocationControl: React.FunctionComponent<LocationControlProps> = ({
           className={textFieldClassName}
         />
         <TextField
+          error={!!qtyErrorText}
+          helperText={qtyErrorText}
           required
           value={value.qty}
           onChange={(e) => handleLocationChange("qty", e.target.value, index)}
@@ -110,6 +128,7 @@ const LocationControl: React.FunctionComponent<LocationControlProps> = ({
 
 LocationControl.defaultProps = {
   textFieldClassName: undefined,
+  validationMessages: undefined,
 };
 
 export default LocationControl;
