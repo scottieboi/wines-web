@@ -3,17 +3,27 @@ import { IconButton, TextField, Typography } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import { LocationValidationMessages } from "./ValidationMessages";
+import { Location } from "./FormData";
 
-export interface Location {
-  boxno: number | "";
-  qty: number | "";
+export interface LocationTextField {
+  type: "boxno" | "qty";
+  newValue: number | "";
+  locationId: number;
 }
 
 interface LocationControlProps {
   locations: Location[];
-  onUpdateLocations: (locations: Location[]) => void;
+  onUpdateLocations: ({
+    addLocation,
+    removeLocation,
+    newLocation,
+  }: {
+    addLocation?: boolean;
+    removeLocation?: boolean;
+    newLocation?: LocationTextField;
+  }) => void;
   textFieldClassName?: string;
-  validationMessages?: LocationValidationMessages[];
+  validationMessages?: Record<number, LocationValidationMessages>;
 }
 
 const LocationControl: React.FunctionComponent<LocationControlProps> = ({
@@ -23,18 +33,12 @@ const LocationControl: React.FunctionComponent<LocationControlProps> = ({
   validationMessages,
 }: LocationControlProps): JSX.Element => {
   const handleAddLocation = () => {
-    onUpdateLocations([
-      ...locations,
-      {
-        qty: "",
-        boxno: "",
-      },
-    ]);
+    onUpdateLocations({ addLocation: true });
   };
 
   const handleRemoveLocation = () => {
     if (locations.length > 1) {
-      onUpdateLocations([...locations].slice(0, -1));
+      onUpdateLocations({ removeLocation: true });
     }
   };
 
@@ -43,16 +47,17 @@ const LocationControl: React.FunctionComponent<LocationControlProps> = ({
     newValue: string,
     locationId: number
   ) => {
-    const newLocations = [...locations];
     const parsedNewValue = newValue === "" ? "" : Number.parseInt(newValue, 10);
-    newLocations[locationId] = {
-      ...locations[locationId],
-      [type]:
-        !Number.isNaN(parsedNewValue) && parsedNewValue !== 0
-          ? parsedNewValue
-          : locations[locationId][type],
-    };
-    onUpdateLocations(newLocations);
+    onUpdateLocations({
+      newLocation: {
+        newValue:
+          !Number.isNaN(parsedNewValue) && parsedNewValue !== 0
+            ? parsedNewValue
+            : locations[locationId][type],
+        locationId,
+        type,
+      },
+    });
   };
 
   const createLocationInputs = (value: Location, index: number) => {

@@ -14,7 +14,7 @@ import {
   useFindVineyards,
   useFindWineTypes,
 } from "../../../hooks/synchronous";
-import LocationControl, { Location } from "./LocationControl";
+import LocationControl, { LocationTextField } from "./LocationControl";
 import { FormData } from "./FormData";
 import { ValidationMessages } from "./ValidationMessages";
 import { validateFormData } from "./validateFormData";
@@ -138,7 +138,64 @@ const AddWine = (): JSX.Element => {
     }
   };
 
-  const handleLocationsChange = (locations: Location[]) => {
+  const handleLocationsChange = ({
+    addLocation,
+    removeLocation,
+    newLocation,
+  }: {
+    addLocation?: boolean;
+    removeLocation?: boolean;
+    newLocation?: LocationTextField;
+  }) => {
+    let locations = [...formData.locations];
+    // __ add an empty row __
+    if (addLocation) {
+      locations.push({
+        boxno: "",
+        qty: "",
+      });
+    }
+    // __ delete last row __
+    else if (removeLocation) {
+      // remove validations on deleted row, if present
+      const deletedRowIndex = locations.length - 1;
+      if (errorMessages.locations && errorMessages.locations[deletedRowIndex]) {
+        const newLocationsErrorMsgs = { ...errorMessages.locations };
+        delete newLocationsErrorMsgs[deletedRowIndex];
+        setErrorMessages({
+          ...errorMessages,
+          locations: newLocationsErrorMsgs,
+        });
+      }
+
+      // remove last row in formData.locations
+      locations = formData.locations.slice(0, -1);
+    }
+    // __ update existing row __
+    else if (newLocation) {
+      // remove validations on updated field, if present
+      if (
+        errorMessages.locations &&
+        errorMessages.locations[newLocation.locationId]
+      ) {
+        const newLocationsErrorMsgs = {
+          ...errorMessages.locations,
+          [newLocation.locationId]: {
+            ...errorMessages.locations[newLocation.locationId],
+            [newLocation.type]: undefined,
+          },
+        };
+        setErrorMessages({
+          ...errorMessages,
+          locations: newLocationsErrorMsgs,
+        });
+      }
+      locations[newLocation.locationId] = {
+        ...locations[newLocation.locationId],
+        [newLocation.type]: newLocation.newValue,
+      };
+    }
+
     setFormData({
       ...formData,
       locations,

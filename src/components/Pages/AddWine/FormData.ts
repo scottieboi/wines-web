@@ -1,5 +1,9 @@
 import { OptionType } from "./AutocompleteControl";
-import { Location } from "./LocationControl";
+
+export interface Location {
+  boxno: number | "";
+  qty: number | "";
+}
 
 export interface FormData {
   wineName: string;

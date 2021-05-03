@@ -9,5 +9,5 @@ export interface ValidationMessages {
   wineType?: string;
   region?: string;
   vintage?: string;
-  locations?: LocationValidationMessages[];
+  locations?: Record<number, LocationValidationMessages>;
 }
