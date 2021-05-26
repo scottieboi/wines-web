@@ -1,45 +1,51 @@
+import { SaveWineRequest } from "../../../api/apiRequests";
 import { FormData } from "./FormData";
 import {
   LocationValidationMessages,
   ValidationMessages,
 } from "./ValidationMessages";
 
-export function validateFormData(formData: FormData): ValidationMessages {
+export function validateFormData(
+  formData: FormData
+): {
+  errors: ValidationMessages;
+  validatedModel: SaveWineRequest | null;
+} {
   const missingFieldText = "Missing required field";
-  let newErrorMessages: ValidationMessages = {};
+  let errors: ValidationMessages = {};
   const locationErrorMessages: LocationValidationMessages[] = [];
   // Required fields
   if (!formData.wineName) {
-    newErrorMessages = {
-      ...newErrorMessages,
+    errors = {
+      ...errors,
       wineName: missingFieldText,
     };
   }
 
   if (!formData.vineyard?.name) {
-    newErrorMessages = {
-      ...newErrorMessages,
+    errors = {
+      ...errors,
       vineyard: missingFieldText,
     };
   }
 
   if (!formData.wineType?.name) {
-    newErrorMessages = {
-      ...newErrorMessages,
+    errors = {
+      ...errors,
       wineType: missingFieldText,
     };
   }
 
   if (!formData.region?.name) {
-    newErrorMessages = {
-      ...newErrorMessages,
+    errors = {
+      ...errors,
       region: missingFieldText,
     };
   }
 
   if (!formData.vintage) {
-    newErrorMessages = {
-      ...newErrorMessages,
+    errors = {
+      ...errors,
       vintage: missingFieldText,
     };
   }
@@ -62,13 +68,33 @@ export function validateFormData(formData: FormData): ValidationMessages {
   });
 
   if (locationErrorMessages.length > 0) {
-    newErrorMessages = {
-      ...newErrorMessages,
+    errors = {
+      ...errors,
       locations: locationErrorMessages,
     };
   }
 
-  return newErrorMessages;
+  let validatedModel: SaveWineRequest | null = null;
+
+  // ___ when no errors, contruct the reqest model ___
+  if (Object.keys(errors).length === 0) {
+    validatedModel = {
+      wineName: formData.wineName,
+      vineyard: formData.vineyard?.name ?? "",
+      wineType: formData.wineType?.name ?? "",
+      region: formData.region?.name ?? "",
+      vintage: formData.vintage === "" ? 0 : formData.vintage,
+      locations: formData.locations.map((l) => ({
+        boxNo: l.boxno === "" ? NaN : l.boxno,
+        qty: l.qty === "" ? NaN : l.qty,
+      })),
+    };
+  }
+
+  return {
+    errors,
+    validatedModel,
+  };
 }
 
 export default validateFormData;

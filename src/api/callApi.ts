@@ -1,5 +1,6 @@
 import { AxiosResponse } from "axios";
 import { apiClient } from "./apiClient";
+import { SaveWineRequest } from "./apiRequests";
 import {
   AllWinesResponse,
   FindRegionResponse,
@@ -7,6 +8,13 @@ import {
   FindWineRespone,
   FindWineTypeResponse,
 } from "./apiResponses";
+
+export function saveNewWine(
+  token: string,
+  wine: SaveWineRequest
+): Promise<AxiosResponse> {
+  return apiClient.post("wine", wine);
+}
 
 export function getAllWines(
   token: string

@@ -5,6 +5,7 @@ import {
   makeStyles,
   TextField,
 } from "@material-ui/core";
+import DoneIcon from "@material-ui/icons/Done";
 import { Page } from "../../Common/Page";
 import { Tile } from "../../Common/Tile";
 import { Title } from "../../Common/Title";
@@ -13,11 +14,18 @@ import {
   useFindRegions,
   useFindVineyards,
   useFindWineTypes,
+  useSaveNewWine,
 } from "../../../hooks/synchronous";
 import LocationControl, { LocationTextField } from "./LocationControl";
 import { FormData } from "./FormData";
 import { ValidationMessages } from "./ValidationMessages";
 import { validateFormData } from "./validateFormData";
+
+enum Saving {
+  Unsaved,
+  Saving,
+  Saved,
+}
 
 const useStyles = makeStyles((theme) => {
   const textFieldMargin = theme.spacing(1);
@@ -41,8 +49,12 @@ const useStyles = makeStyles((theme) => {
       marginRight: textFieldMargin,
       width: `calc(100% - ${textFieldMargin * 2}px)`,
     },
-    submitBtn: {
+    submitBtnContainer: {
       marginTop: theme.spacing(4),
+      display: "flex",
+    },
+    doneIcon: {
+      marginLeft: textFieldMargin,
     },
   };
 });
@@ -65,10 +77,12 @@ const AddWine = (): JSX.Element => {
     region: null,
     locations: [{ qty: "", boxno: "" }],
   });
-  const [saving, setSaving] = React.useState(false);
+  const [saving, setSaving] = React.useState(Saving.Unsaved);
   const [errorMessages, setErrorMessages] = React.useState<ValidationMessages>(
     {}
   );
+
+  const callSaveWine = useSaveNewWine();
 
   // ___ Fetch autocomplete data ___
   const callFindVineyards = useFindVineyards();
@@ -203,12 +217,14 @@ const AddWine = (): JSX.Element => {
   };
 
   // ___ onSave handler ___
-  const handleSave = () => {
-    const newErrorMessages = validateFormData(formData);
-    setErrorMessages(newErrorMessages);
+  const handleSave = async () => {
+    const validation = validateFormData(formData);
+    setErrorMessages(validation.errors);
 
-    if (Object.keys(newErrorMessages).length === 0) {
-      setSaving(true);
+    if (validation.validatedModel !== null) {
+      setSaving(Saving.Saving);
+      await callSaveWine(validation.validatedModel);
+      setSaving(Saving.Saved);
     }
   };
 
@@ -326,16 +342,28 @@ const AddWine = (): JSX.Element => {
               textFieldClassName={classes.textField}
             />
           </div>
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={saving}
-            className={classes.submitBtn}
-            onClick={handleSave}
-            endIcon={saving && <CircularProgress color="inherit" size={20} />}
-          >
-            Add wine
-          </Button>
+          <div className={classes.submitBtnContainer}>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={saving !== Saving.Unsaved}
+              onClick={handleSave}
+              endIcon={
+                saving === Saving.Saving && (
+                  <CircularProgress color="inherit" size={20} />
+                )
+              }
+            >
+              Add wine
+            </Button>
+            {saving === Saving.Saved && (
+              <DoneIcon
+                color="primary"
+                fontSize="large"
+                className={classes.doneIcon}
+              />
+            )}
+          </div>
         </form>
       </Tile>
     </Page>
