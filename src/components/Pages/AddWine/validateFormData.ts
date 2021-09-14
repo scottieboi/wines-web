@@ -5,9 +5,7 @@ import {
   ValidationMessages,
 } from "./ValidationMessages";
 
-export function validateFormData(
-  formData: FormData
-): {
+export function validateFormData(formData: FormData): {
   errors: ValidationMessages;
   validatedModel: SaveWineRequest | null;
 } {

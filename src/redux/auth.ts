@@ -1,11 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-const getToken = (): string | null => {
-  const tokenString = localStorage.getItem("token") ?? "{}";
-  const userToken = JSON.parse(tokenString);
-  return userToken?.token ?? null;
-};
+import { getToken } from "../utils/storageUtils";
 
 interface AuthState {
   token: string | null;

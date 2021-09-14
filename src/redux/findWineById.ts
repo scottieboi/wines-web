@@ -26,8 +26,6 @@ const findWineByIdSlice = createSlice({
   },
 });
 
-export const {
-  updateFindWineById,
-  fetchFindWineById,
-} = findWineByIdSlice.actions;
+export const { updateFindWineById, fetchFindWineById } =
+  findWineByIdSlice.actions;
 export default findWineByIdSlice.reducer;
