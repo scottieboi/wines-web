@@ -88,6 +88,14 @@ export function validateFormData(
         boxNo: l.boxno === "" ? NaN : l.boxno,
         qty: l.qty === "" ? NaN : l.qty,
       })),
+      notes: formData.notes,
+      yearBought: formData.yearBought === "" ? undefined : formData.yearBought,
+      drinkFrom: formData.drinkFrom === "" ? undefined : formData.drinkFrom,
+      drinkTo: formData.drinkTo === "" ? undefined : formData.drinkTo,
+      pricePaid: Number.parseFloat(formData.pricePaid) ?? undefined,
+      rating: formData.rating === "" ? undefined : formData.rating,
+      percentAlcohol: Number.parseFloat(formData.percentAlcohol) ?? undefined,
+      bottleSize: formData.bottleSize === "" ? undefined : formData.bottleSize,
     };
   }
 

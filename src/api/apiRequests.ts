@@ -17,6 +17,7 @@ export interface SaveWineRequest {
   drinkTo?: number;
   pricePaid?: number;
   rating?: number;
+  percentAlcohol?: number;
   bottleSize?: number;
   notes?: string;
   locations: Location[];

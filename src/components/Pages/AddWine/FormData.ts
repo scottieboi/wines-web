@@ -14,6 +14,7 @@ export interface FormData {
   drinkTo: number | "";
   pricePaid: string;
   rating: number | "";
+  percentAlcohol: string;
   bottleSize: number | "";
   wineType: OptionType | null;
   vineyard: OptionType | null;

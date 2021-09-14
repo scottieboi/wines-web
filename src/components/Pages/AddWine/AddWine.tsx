@@ -71,6 +71,7 @@ const AddWine = (): JSX.Element => {
     drinkTo: "",
     pricePaid: "",
     rating: "",
+    percentAlcohol: "",
     bottleSize: "",
     wineType: null,
     vineyard: null,
@@ -142,6 +143,13 @@ const AddWine = (): JSX.Element => {
     // Rating is whole number between 0 and 100 (ideally)
     if (parsedNewValue === "" || /^\d{0,3}$/.test(newValue)) {
       setFormData({ ...formData, rating: parsedNewValue });
+    }
+  };
+
+  const handlePercentAlcoholChange = (newValue: string) => {
+    // 000 or 00.0 or .0
+    if (newValue === "" || /^\d{0,2}\.?\d{0,1}$/.test(newValue)) {
+      setFormData({ ...formData, percentAlcohol: newValue });
     }
   };
 
@@ -322,6 +330,12 @@ const AddWine = (): JSX.Element => {
               className={classes.textField}
               value={formData.bottleSize}
               onChange={(e) => handleBottleSizeChange(e.target.value)}
+            />
+            <TextField
+              label="Percent alcohol"
+              className={classes.textField}
+              value={formData.percentAlcohol}
+              onChange={(e) => handlePercentAlcoholChange(e.target.value)}
             />
             <TextField
               label="Notes"
