@@ -3,6 +3,8 @@
     "baseUrl": "./src",
     "jsx": "react",
     "moduleResolution": "Node",
+    "module": "ESNext",
+    "types": ["vite/client"],
     "paths": {
       "~*": [
         "./*"

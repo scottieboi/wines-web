@@ -1,5 +1,3 @@
 node_modules
 dist
-.cache
-.parcel-cache
-.env
+.env.local
