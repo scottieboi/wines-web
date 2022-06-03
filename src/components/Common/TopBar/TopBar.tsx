@@ -19,7 +19,7 @@ import AddBoxIcon from "@material-ui/icons/AddBox";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import clsx from "clsx";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Path } from "../../../routing";
 
 interface TopBarProps {
@@ -110,12 +110,12 @@ const useStyles = makeStyles((theme) => ({
 const TopBar: React.FunctionComponent<TopBarProps> = (props: TopBarProps) => {
   const classes = useStyles();
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const handleAddWine = () => {
-    history.push(Path.AddWine);
+    navigate(Path.AddWine);
   };
   const handleDashboard = () => {
-    history.push(Path.Dashboard);
+    navigate(Path.Dashboard);
   };
 
   const [open, setOpen] = useState(false);

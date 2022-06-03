@@ -1,6 +1,6 @@
 import * as React from "react";
-import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import { useAppSelector } from "../../hooks";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useAppSelector } from "~hooks";
 import { Path } from "../../routing";
 import { AddWine, Dashboard, Login } from "../Pages";
 
@@ -13,15 +13,10 @@ function App(): JSX.Element {
 
   return (
     <BrowserRouter>
-      <Switch>
-        <Route path={Path.Dashboard}>
-          <Dashboard />
-        </Route>
-        <Route path={Path.AddWine}>
-          <AddWine />
-        </Route>
-        <Route exact path="/" render={() => <Redirect to={Path.Dashboard} />} />
-      </Switch>
+      <Routes>
+        <Route path={Path.Dashboard} element={<Dashboard />} />
+        <Route path={Path.AddWine} element={<AddWine />} />
+      </Routes>
     </BrowserRouter>
   );
 }

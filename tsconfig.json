@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": "./src",
+    "rootDir": "./src",
     "jsx": "react",
     "moduleResolution": "Node",
     "module": "ESNext",
