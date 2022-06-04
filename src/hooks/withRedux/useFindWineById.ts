@@ -1,7 +1,7 @@
 import {
   fetchFindWineById,
   updateFindWineById,
-} from "../../redux/findWineById";
+} from "../../state/findWineById";
 import { getWineById } from "../../api/callApi";
 import { useAppDispatch, useAppSelector } from "../hooks";
 

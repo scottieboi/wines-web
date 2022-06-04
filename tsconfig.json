@@ -12,7 +12,8 @@
       ]
     },
     "strict": true,
-    "target": "ES2015"
+    "target": "ES2015",
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src/**/*"

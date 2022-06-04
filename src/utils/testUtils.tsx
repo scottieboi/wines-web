@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {
   render as rtlRender,
@@ -6,7 +6,7 @@ import {
   RenderResult,
 } from "@testing-library/react";
 import { Provider } from "react-redux";
-import { store } from "../redux/store";
+import { store } from "../state/store";
 
 const customRender = (
   ui: React.ReactElement,
