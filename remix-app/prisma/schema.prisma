@@ -8,8 +8,9 @@ datasource db {
 }
 
 model box {
-  boxno    Int        @id
+  id       Int        @id(map: "PK_box") @default(autoincrement())
   cuid     String     @default(cuid())
+  boxno    Int
   size     String?
   location location[]
 }
@@ -19,12 +20,12 @@ model location {
   cuid              String    @default(cuid())
   wineid            Int?
   no                Int?
-  box               Int?
+  boxid             Int?
   cellarversion     Int?      @db.SmallInt
-  box_boxTolocation box?      @relation(fields: [box], references: [boxno], onDelete: Restrict, onUpdate: NoAction)
+  box               box?      @relation(fields: [boxid], references: [id], onDelete: Restrict, onUpdate: NoAction)
   winelist          winelist? @relation(fields: [wineid], references: [id], onDelete: Restrict, onUpdate: NoAction)
 
-  @@index([box], map: "location_box_fk")
+  @@index([boxid], map: "location_boxid_fk")
   @@index([wineid], map: "location_wineid_fk")
 }
 
