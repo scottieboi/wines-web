@@ -7,7 +7,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import React from "react";
 
 export const meta: MetaFunction = () => ({
   title: "Wines web",
@@ -23,7 +22,6 @@ export default function App() {
         <Links />
       </head>
       <body>
-        Hello world
         <Outlet />
         <ScrollRestoration />
         <Scripts />
