@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model box {
+  boxno    Int        @id
+  cuid     String     @default(cuid())
+  size     String?
+  location location[]
+}
+
+model location {
+  id                Int       @id(map: "PK_location") @default(autoincrement())
+  cuid              String    @default(cuid())
+  wineid            Int?
+  no                Int?
+  box               Int?
+  cellarversion     Int?      @db.SmallInt
+  box_boxTolocation box?      @relation(fields: [box], references: [boxno], onDelete: Restrict, onUpdate: NoAction)
+  winelist          winelist? @relation(fields: [wineid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+
+  @@index([box], map: "location_box_fk")
+  @@index([wineid], map: "location_wineid_fk")
+}
+
+model region {
+  id       Int        @id(map: "PK_region") @default(autoincrement())
+  cuid     String     @default(cuid())
+  region   String     @unique
+  winelist winelist[]
+}
+
+model vineyard {
+  id       Int        @id(map: "PK_vineyard") @default(autoincrement())
+  cuid     String     @default(cuid())
+  vineyard String     @unique
+  winelist winelist[]
+}
+
+model winelist {
+  id             Int        @id(map: "PK_winelist") @default(autoincrement())
+  cuid           String     @default(cuid())
+  vintage        Int?       @db.SmallInt
+  winename       String?
+  winetypeid     Int?
+  percentalcohol Float?     @db.Real
+  pricepaid      Decimal?   @db.Decimal(7, 2)
+  yearbought     Int?       @db.SmallInt
+  bottlesize     Int?       @db.SmallInt
+  notes          String?
+  rating         Int?       @db.SmallInt
+  drinkrangefrom Int?       @db.SmallInt
+  drinkrangeto   Int?       @db.SmallInt
+  regionid       Int?
+  vineyardid     Int?
+  region         region?    @relation(fields: [regionid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  vineyard       vineyard?  @relation(fields: [vineyardid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  winetype       winetype?  @relation(fields: [winetypeid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  location       location[]
+
+  @@index([regionid], map: "winelist_regionid_fk")
+  @@index([vineyardid], map: "winelist_vineyardid_fk")
+  @@index([winetypeid], map: "winelist_winetypeid_fk")
+}
+
+model winetype {
+  id       Int        @id(map: "PK_winetype") @default(autoincrement())
+  cuid     String     @default(cuid())
+  winetype String     @unique
+  winelist winelist[]
+}
