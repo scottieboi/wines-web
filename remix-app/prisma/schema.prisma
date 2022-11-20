@@ -58,14 +58,17 @@ model winelist {
   drinkrangeto   Int?       @db.SmallInt
   regionid       Int?
   vineyardid     Int?
+  userid         Int
   region         region?    @relation(fields: [regionid], references: [id], onDelete: Restrict, onUpdate: NoAction)
   vineyard       vineyard?  @relation(fields: [vineyardid], references: [id], onDelete: Restrict, onUpdate: NoAction)
   winetype       winetype?  @relation(fields: [winetypeid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  user           user       @relation(fields: [userid], references: [id], onDelete: Restrict, onUpdate: NoAction)
   location       location[]
 
   @@index([regionid], map: "winelist_regionid_fk")
   @@index([vineyardid], map: "winelist_vineyardid_fk")
   @@index([winetypeid], map: "winelist_winetypeid_fk")
+  @@index([userid], map: "winelist_userid_fk")
 }
 
 model winetype {
@@ -73,4 +76,14 @@ model winetype {
   cuid     String     @default(cuid())
   winetype String     @unique
   winelist winelist[]
+}
+
+model user {
+  id           Int      @id(map: "PK_user") @default(autoincrement())
+  cuid         String   @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  username     String   @unique
+  passwordHash String
+  winelists    winelist[]
 }
