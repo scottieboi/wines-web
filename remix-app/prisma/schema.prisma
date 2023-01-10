@@ -59,11 +59,11 @@ model winelist {
   drinkrangeto   Int?       @db.SmallInt
   regionid       Int?
   vineyardid     Int?
-  userid         Int
+  userid         String
   region         region?    @relation(fields: [regionid], references: [id], onDelete: Restrict, onUpdate: NoAction)
   vineyard       vineyard?  @relation(fields: [vineyardid], references: [id], onDelete: Restrict, onUpdate: NoAction)
   winetype       winetype?  @relation(fields: [winetypeid], references: [id], onDelete: Restrict, onUpdate: NoAction)
-  user           user       @relation(fields: [userid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  user           user       @relation(fields: [userid], references: [cuid], onDelete: Restrict, onUpdate: NoAction)
   location       location[]
 
   @@index([regionid], map: "winelist_regionid_fk")
@@ -80,8 +80,7 @@ model winetype {
 }
 
 model user {
-  id           Int      @id(map: "PK_user") @default(autoincrement())
-  cuid         String   @default(cuid())
+  cuid         String   @id(map: "PK_user") @default(cuid())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   username     String   @unique
