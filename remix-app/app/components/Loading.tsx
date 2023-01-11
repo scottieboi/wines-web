@@ -1,7 +1,7 @@
 function Loading() {
   return (
     <svg
-      className="h-5 w-5 animate-spin text-gray-500"
+      className="h-full w-full animate-spin text-gray-500"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

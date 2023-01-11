@@ -16,10 +16,16 @@ export let loader: LoaderFunction = async ({ request }) => {
       },
       select: {
         region: true,
+        id: true,
       },
     });
 
-    return json(regions);
+    return json(
+      regions.map(({ region, ...r }) => ({
+        ...r,
+        name: region,
+      }))
+    );
   }
 
   return json([]);
