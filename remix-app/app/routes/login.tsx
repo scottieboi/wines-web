@@ -1,6 +1,6 @@
 import type { ActionFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, useActionData, useSearchParams } from "@remix-run/react";
+import { useActionData, useSearchParams } from "@remix-run/react";
 import { db } from "~/utils/db.server";
 import { createUserSession, login, register } from "~/utils/session.server";
 
@@ -112,18 +112,18 @@ export default function Login() {
   const actionData = useActionData<typeof action>();
   const [searchParams] = useSearchParams();
   return (
-    <div className="container">
-      <div className="content" data-light="">
-        <h1>Login</h1>
+    <div className="container mx-auto">
+      <div className="prose">
+        <h2 className="mt-4">Login</h2>
         <form method="post">
           <input
             type="hidden"
             name="redirectTo"
             value={searchParams.get("redirectTo") ?? undefined}
           />
-          <fieldset>
+          <fieldset className="form-control">
             <legend className="sr-only">Login or Register?</legend>
-            <label>
+            <label className="label cursor-pointer justify-start">
               <input
                 type="radio"
                 name="loginType"
@@ -132,25 +132,30 @@ export default function Login() {
                   !actionData?.fields?.loginType ||
                   actionData?.fields?.loginType === "login"
                 }
-              />{" "}
-              Login
+                className="radio"
+              />
+              <span className="pl-2">Login</span>
             </label>
-            <label>
+            <label className="label cursor-pointer justify-start">
               <input
                 type="radio"
                 name="loginType"
                 value="register"
                 defaultChecked={actionData?.fields?.loginType === "register"}
-              />{" "}
-              Register
+                className="radio"
+              />
+              <span className="pl-2">Register</span>
             </label>
           </fieldset>
           <div>
-            <label htmlFor="username-input">Username</label>
+            <label htmlFor="username-input" className="label">
+              <span className="label-text">Username</span>
+            </label>
             <input
               type="text"
               id="username-input"
               name="username"
+              className="input input-bordered"
               defaultValue={actionData?.fields?.username}
               aria-invalid={Boolean(actionData?.fieldErrors?.username)}
               aria-errormessage={
@@ -158,21 +163,20 @@ export default function Login() {
               }
             />
             {actionData?.fieldErrors?.username ? (
-              <p
-                className="form-validation-error"
-                role="alert"
-                id="username-error"
-              >
+              <div className="my-2" role="alert" id="username-error">
                 {actionData.fieldErrors.username}
-              </p>
+              </div>
             ) : null}
           </div>
           <div>
-            <label htmlFor="password-input">Password</label>
+            <label htmlFor="password-input" className="label">
+              <span className="label-text">Password</span>
+            </label>
             <input
               id="password-input"
               name="password"
               type="password"
+              className="input input-bordered"
               defaultValue={actionData?.fields?.password}
               aria-invalid={Boolean(actionData?.fieldErrors?.password)}
               aria-errormessage={
@@ -180,36 +184,22 @@ export default function Login() {
               }
             />
             {actionData?.fieldErrors?.password ? (
-              <p
-                className="form-validation-error"
-                role="alert"
-                id="password-error"
-              >
+              <div className="my-2" role="alert" id="password-error">
                 {actionData.fieldErrors.password}
-              </p>
+              </div>
             ) : null}
           </div>
           <div id="form-error-message">
             {actionData?.formError ? (
-              <p className="form-validation-error" role="alert">
+              <div className="my-2" role="alert">
                 {actionData.formError}
-              </p>
+              </div>
             ) : null}
           </div>
-          <button type="submit" className="button">
+          <button type="submit" className="btn btn-primary my-4">
             Submit
           </button>
         </form>
-      </div>
-      <div className="links">
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
-        </ul>
       </div>
     </div>
   );
