@@ -1,6 +1,6 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { getUser, requireUserId } from "~/utils/session.server";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, Outlet, useLoaderData } from "@remix-run/react";
 
 type LoaderData = {
   user?: { id: string; username: string };
@@ -31,6 +31,7 @@ export default function DashboardRoute() {
         <Link to="/login">Login</Link>
       )}
       <div>Hello Dashboard Route</div>
+      <Outlet />
     </div>
   );
 }
