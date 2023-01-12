@@ -122,7 +122,6 @@ export default function Login() {
             value={searchParams.get("redirectTo") ?? undefined}
           />
           <fieldset className="form-control">
-            <legend className="sr-only">Login or Register?</legend>
             <label className="label cursor-pointer justify-start">
               <input
                 type="radio"
@@ -155,7 +154,7 @@ export default function Login() {
               type="text"
               id="username-input"
               name="username"
-              className="input input-bordered"
+              className="input-bordered input"
               defaultValue={actionData?.fields?.username}
               aria-invalid={Boolean(actionData?.fieldErrors?.username)}
               aria-errormessage={
@@ -176,7 +175,7 @@ export default function Login() {
               id="password-input"
               name="password"
               type="password"
-              className="input input-bordered"
+              className="input-bordered input"
               defaultValue={actionData?.fields?.password}
               aria-invalid={Boolean(actionData?.fieldErrors?.password)}
               aria-errormessage={
@@ -196,7 +195,7 @@ export default function Login() {
               </div>
             ) : null}
           </div>
-          <button type="submit" className="btn btn-primary my-4">
+          <button type="submit" className="btn-primary btn my-4">
             Submit
           </button>
         </form>
