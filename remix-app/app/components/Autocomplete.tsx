@@ -23,16 +23,20 @@ const Autocomplete = ({ inputId, inputName }: AutocompleteProps) => {
           <div className="relative w-full cursor-default">
             <Combobox.Input
               className="input-bordered input w-full py-2 pl-3 pr-10"
-              displayValue={(person) => {
-                // @ts-ignore
-                return person.name;
-              }}
+              displayValue={(region: any) => region.name}
               id={inputId}
               name={inputName}
+              autoComplete="off"
               onChange={(event) => {
                 setQuery(event.target.value);
                 fetcher.load(`/api/regions?q=${event.target.value}`);
               }}
+            />
+            <input
+              type="hidden"
+              id={`${inputId}-data`}
+              name={`${inputName}-data`}
+              value={JSON.stringify(selected)}
             />
             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
               {isLoading && (

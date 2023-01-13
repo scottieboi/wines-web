@@ -1,6 +1,11 @@
 import type { ActionFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useActionData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useSearchParams,
+  useTransition,
+} from "@remix-run/react";
 import { db } from "~/utils/db.server";
 import { createUserSession, login, register } from "~/utils/session.server";
 
@@ -110,12 +115,14 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function Login() {
   const actionData = useActionData<typeof action>();
+  const transition = useTransition();
   const [searchParams] = useSearchParams();
+
   return (
     <div className="container mx-auto">
       <div className="prose">
         <h2 className="mt-4">Login</h2>
-        <form method="post">
+        <Form method="post">
           <input
             type="hidden"
             name="redirectTo"
@@ -195,10 +202,15 @@ export default function Login() {
               </div>
             ) : null}
           </div>
-          <button type="submit" className="btn-primary btn my-4">
+          <button
+            type="submit"
+            className={`btn-primary btn ${
+              transition.state === "submitting" ? "btn-disabled" : ""
+            } my-4`}
+          >
             Submit
           </button>
-        </form>
+        </Form>
       </div>
     </div>
   );

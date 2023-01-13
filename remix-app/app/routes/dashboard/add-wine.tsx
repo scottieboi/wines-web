@@ -1,23 +1,27 @@
 import Autocomplete from "~/components/Autocomplete";
 import type { ActionFunction } from "@remix-run/node";
+import { Form, useTransition } from "@remix-run/react";
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
   const region = form.get("region");
+  const regionData = form.get("region-data");
   const wineName = form.get("wine-name");
-  console.log(region, wineName);
+  console.log(region, wineName, regionData);
 
   return null;
 };
 
 export default function AddWine() {
+  const transition = useTransition();
+
   return (
     <div className="container mx-auto">
       <div className="prose mx-2">
         <h2 className="my-4">Add new wine</h2>
       </div>
       <div className="mx-2 flex flex-wrap gap-2">
-        <form method="post">
+        <Form method="post">
           <div className="form-control">
             <label htmlFor="wine-name-input" className="label">
               <span className="label-text">Wine name</span>
@@ -35,10 +39,15 @@ export default function AddWine() {
             </label>
             <Autocomplete inputId="region-input" inputName="region" />
           </div>
-          <button type="submit" className="btn-primary btn my-4">
+          <button
+            type="submit"
+            className={`btn-primary btn ${
+              transition.state === "submitting" ? "btn-disabled" : ""
+            } my-4`}
+          >
             Submit
           </button>
-        </form>
+        </Form>
       </div>
     </div>
   );
