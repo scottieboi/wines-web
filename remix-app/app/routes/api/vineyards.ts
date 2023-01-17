@@ -7,23 +7,23 @@ export let loader: LoaderFunction = async ({ request }) => {
   const query = url.searchParams.get("q");
 
   if (query) {
-    const regions = await db.region.findMany({
+    const vineyards = await db.vineyard.findMany({
       where: {
-        region: {
+        vineyard: {
           contains: query,
           mode: "insensitive",
         },
       },
       select: {
-        region: true,
+        vineyard: true,
         id: true,
       },
     });
 
     return json(
-      regions.map(({ region, ...x }) => ({
+      vineyards.map(({ vineyard, ...x }) => ({
         ...x,
-        name: region,
+        name: vineyard,
       }))
     );
   }

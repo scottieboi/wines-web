@@ -7,21 +7,25 @@ import { z } from "zod";
 type ActionData = {
   formError?: string;
   fieldErrors?: {
-    region: string | undefined;
-    wineName: string | undefined;
-    vintage: string | undefined;
+    region?: string;
+    wineName?: string;
+    vintage?: string;
+    vineyard?: string;
+    wineType?: string;
   };
   fields?: {
     region: string;
     wineName: string;
     vintage: string;
+    vineyard: string;
+    wineType: string;
   };
 };
 
 const badRequest = (data: ActionData) => json(data, { status: 400 });
 
-const RegionSchema = z.object({
-  id: z.number().or(z.null()),
+const AutocompleteSchema = z.object({
+  id: z.string().or(z.null()),
   name: z.string().min(1).trim(),
 });
 const VintageSchema = z.string().length(4);
@@ -30,12 +34,24 @@ const WineNameSchema = z.string().min(1);
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
   const regionData = form.get("region-data");
+  const vineyardData = form.get("vineyard-data");
+  const wineTypeData = form.get("wine-type-data");
 
   if (typeof regionData !== "string") {
     return badRequest({ formError: "Error saving region data" });
   }
 
-  const region = RegionSchema.safeParse(JSON.parse(regionData));
+  if (typeof vineyardData !== "string") {
+    return badRequest({ formError: "Error saving vineyard data" });
+  }
+
+  if (typeof wineTypeData !== "string") {
+    return badRequest({ formError: "Error saving wine type data" });
+  }
+
+  const region = AutocompleteSchema.safeParse(JSON.parse(regionData));
+  const vineyard = AutocompleteSchema.safeParse(JSON.parse(vineyardData));
+  const wineType = AutocompleteSchema.safeParse(JSON.parse(wineTypeData));
   const vintage = VintageSchema.safeParse(form.get("vintage"));
   const wineName = WineNameSchema.safeParse(form.get("wine-name"));
 
@@ -43,19 +59,33 @@ export const action: ActionFunction = async ({ request }) => {
     region: !region.success ? "Provide valid region" : undefined,
     wineName: !wineName.success ? "Provide valid wine name" : undefined,
     vintage: !vintage.success ? "Provide valid vintage" : undefined,
+    vineyard: !vineyard.success ? "Provide valid vineyard" : undefined,
+    wineType: !wineType.success ? "Provide valid wine type" : undefined,
   };
 
-  if (!region.success || !wineName.success || !vintage.success) {
+  if (
+    !region.success ||
+    !wineName.success ||
+    !vintage.success ||
+    !vineyard.success ||
+    !wineType.success
+  ) {
     return badRequest({ fieldErrors });
   }
 
-  console.log(wineName.data, vintage.data, region.data);
+  console.log(
+    wineName.data,
+    vintage.data,
+    region.data,
+    wineType.data,
+    vineyard.data
+  );
 
   return null;
 };
 
 export default function AddWine() {
-  const actionData = useActionData<typeof action>();
+  const actionData = useActionData<ActionData>();
   const transition = useTransition();
 
   return (
@@ -83,10 +113,44 @@ export default function AddWine() {
             )}
           </div>
           <div className="form-control">
+            <label htmlFor="vineyard-input" className="label">
+              <span className="label-text">Vineyard</span>
+            </label>
+            <Autocomplete
+              inputId="vineyard-input"
+              inputName="vineyard"
+              apiUrl="/api/vineyards"
+            />
+            {actionData?.fieldErrors?.vineyard && (
+              <div className="my-2" role="alert" id="vineyard-error">
+                {actionData.fieldErrors.vineyard}
+              </div>
+            )}
+          </div>
+          <div className="form-control">
+            <label htmlFor="wine-type-input" className="label">
+              <span className="label-text">Wine Type</span>
+            </label>
+            <Autocomplete
+              inputId="wine-type-input"
+              inputName="wine-type"
+              apiUrl="/api/wine-types"
+            />
+            {actionData?.fieldErrors?.wineType && (
+              <div className="my-2" role="alert" id="region-error">
+                {actionData.fieldErrors.wineType}
+              </div>
+            )}
+          </div>
+          <div className="form-control">
             <label htmlFor="region-input" className="label">
               <span className="label-text">Region</span>
             </label>
-            <Autocomplete inputId="region-input" inputName="region" />
+            <Autocomplete
+              inputId="region-input"
+              inputName="region"
+              apiUrl="/api/regions"
+            />
             {actionData?.fieldErrors?.region && (
               <div className="my-2" role="alert" id="region-error">
                 {actionData.fieldErrors.region}
@@ -110,6 +174,11 @@ export default function AddWine() {
             )}
           </div>
         </div>
+        {actionData?.formError && (
+          <div className="my-2" role="alert" id="vintage-error">
+            {actionData.formError}
+          </div>
+        )}
         <div className="mx-2">
           <button
             type="submit"

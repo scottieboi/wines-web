@@ -7,23 +7,23 @@ export let loader: LoaderFunction = async ({ request }) => {
   const query = url.searchParams.get("q");
 
   if (query) {
-    const regions = await db.region.findMany({
+    const wineTypes = await db.winetype.findMany({
       where: {
-        region: {
+        winetype: {
           contains: query,
           mode: "insensitive",
         },
       },
       select: {
-        region: true,
+        winetype: true,
         id: true,
       },
     });
 
     return json(
-      regions.map(({ region, ...x }) => ({
+      wineTypes.map(({ winetype, ...x }) => ({
         ...x,
-        name: region,
+        name: winetype,
       }))
     );
   }

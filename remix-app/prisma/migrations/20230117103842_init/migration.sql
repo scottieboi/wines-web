@@ -1,19 +1,18 @@
 -- CreateTable
 CREATE TABLE "box" (
+    "id" TEXT NOT NULL,
     "boxno" INTEGER NOT NULL,
-    "cuid" TEXT NOT NULL,
     "size" TEXT,
 
-    CONSTRAINT "box_pkey" PRIMARY KEY ("boxno")
+    CONSTRAINT "PK_box" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "location" (
-    "id" SERIAL NOT NULL,
-    "cuid" TEXT NOT NULL,
-    "wineid" INTEGER,
+    "id" TEXT NOT NULL,
+    "wineid" TEXT,
     "no" INTEGER,
-    "box" INTEGER,
+    "boxid" TEXT,
     "cellarversion" SMALLINT,
 
     CONSTRAINT "PK_location" PRIMARY KEY ("id")
@@ -21,29 +20,26 @@ CREATE TABLE "location" (
 
 -- CreateTable
 CREATE TABLE "region" (
-    "id" SERIAL NOT NULL,
-    "cuid" TEXT NOT NULL,
-    "region" TEXT,
+    "id" TEXT NOT NULL,
+    "region" TEXT NOT NULL,
 
     CONSTRAINT "PK_region" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "vineyard" (
-    "id" SERIAL NOT NULL,
-    "cuid" TEXT NOT NULL,
-    "vineyard" TEXT,
+    "id" TEXT NOT NULL,
+    "vineyard" TEXT NOT NULL,
 
     CONSTRAINT "PK_vineyard" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "winelist" (
-    "id" SERIAL NOT NULL,
-    "cuid" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
     "vintage" SMALLINT,
     "winename" TEXT,
-    "winetypeid" INTEGER,
+    "winetypeid" TEXT,
     "percentalcohol" REAL,
     "pricepaid" DECIMAL(7,2),
     "yearbought" SMALLINT,
@@ -52,26 +48,43 @@ CREATE TABLE "winelist" (
     "rating" SMALLINT,
     "drinkrangefrom" SMALLINT,
     "drinkrangeto" SMALLINT,
-    "regionid" INTEGER,
-    "vineyardid" INTEGER,
+    "regionid" TEXT,
+    "vineyardid" TEXT,
+    "userid" TEXT NOT NULL,
 
     CONSTRAINT "PK_winelist" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "winetype" (
-    "id" SERIAL NOT NULL,
-    "cuid" TEXT NOT NULL,
-    "winetype" TEXT,
+    "id" TEXT NOT NULL,
+    "winetype" TEXT NOT NULL,
 
     CONSTRAINT "PK_winetype" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "user" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "username" TEXT NOT NULL,
+    "passwordHash" TEXT NOT NULL,
+
+    CONSTRAINT "PK_user" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
-CREATE INDEX "location_box_fk" ON "location"("box");
+CREATE INDEX "location_boxid_fk" ON "location"("boxid");
 
 -- CreateIndex
 CREATE INDEX "location_wineid_fk" ON "location"("wineid");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "region_region_key" ON "region"("region");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "vineyard_vineyard_key" ON "vineyard"("vineyard");
 
 -- CreateIndex
 CREATE INDEX "winelist_regionid_fk" ON "winelist"("regionid");
@@ -82,8 +95,17 @@ CREATE INDEX "winelist_vineyardid_fk" ON "winelist"("vineyardid");
 -- CreateIndex
 CREATE INDEX "winelist_winetypeid_fk" ON "winelist"("winetypeid");
 
+-- CreateIndex
+CREATE INDEX "winelist_userid_fk" ON "winelist"("userid");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "winetype_winetype_key" ON "winetype"("winetype");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_username_key" ON "user"("username");
+
 -- AddForeignKey
-ALTER TABLE "location" ADD CONSTRAINT "location_box_fkey" FOREIGN KEY ("box") REFERENCES "box"("boxno") ON DELETE RESTRICT ON UPDATE NO ACTION;
+ALTER TABLE "location" ADD CONSTRAINT "location_boxid_fkey" FOREIGN KEY ("boxid") REFERENCES "box"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "location" ADD CONSTRAINT "location_wineid_fkey" FOREIGN KEY ("wineid") REFERENCES "winelist"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
@@ -96,3 +118,6 @@ ALTER TABLE "winelist" ADD CONSTRAINT "winelist_vineyardid_fkey" FOREIGN KEY ("v
 
 -- AddForeignKey
 ALTER TABLE "winelist" ADD CONSTRAINT "winelist_winetypeid_fkey" FOREIGN KEY ("winetypeid") REFERENCES "winetype"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "winelist" ADD CONSTRAINT "winelist_userid_fkey" FOREIGN KEY ("userid") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;

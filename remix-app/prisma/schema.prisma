@@ -8,19 +8,17 @@ datasource db {
 }
 
 model box {
-  id       Int        @id(map: "PK_box") @default(autoincrement())
-  cuid     String     @default(cuid())
+  id       String        @id(map: "PK_box") @default(cuid())
   boxno    Int
   size     String?
   location location[]
 }
 
 model location {
-  id                Int       @id(map: "PK_location") @default(autoincrement())
-  cuid              String    @default(cuid())
-  wineid            Int?
+  id                String    @id(map: "PK_location") @default(cuid())
+  wineid            String?
   no                Int?
-  boxid             Int?
+  boxid             String?
   cellarversion     Int?      @db.SmallInt
   box               box?      @relation(fields: [boxid], references: [id], onDelete: Restrict, onUpdate: NoAction)
   winelist          winelist? @relation(fields: [wineid], references: [id], onDelete: Restrict, onUpdate: NoAction)
@@ -30,25 +28,22 @@ model location {
 }
 
 model region {
-  id       Int        @id(map: "PK_region") @default(autoincrement())
-  cuid     String     @default(cuid())
+  id       String     @id(map: "PK_region") @default(cuid())
   region   String     @unique
   winelist winelist[]
 }
 
 model vineyard {
-  id       Int        @id(map: "PK_vineyard") @default(autoincrement())
-  cuid     String     @default(cuid())
+  id       String     @id(map: "PK_vineyard") @default(cuid())
   vineyard String     @unique
   winelist winelist[]
 }
 
 model winelist {
-  id             Int        @id(map: "PK_winelist") @default(autoincrement())
-  cuid           String     @default(cuid())
+  id             String     @id(map: "PK_winelist") @default(cuid())
   vintage        Int?       @db.SmallInt
   winename       String?
-  winetypeid     Int?
+  winetypeid     String?
   percentalcohol Float?     @db.Real
   pricepaid      Decimal?   @db.Decimal(7, 2)
   yearbought     Int?       @db.SmallInt
@@ -57,13 +52,13 @@ model winelist {
   rating         Int?       @db.SmallInt
   drinkrangefrom Int?       @db.SmallInt
   drinkrangeto   Int?       @db.SmallInt
-  regionid       Int?
-  vineyardid     Int?
+  regionid       String?
+  vineyardid     String?
   userid         String
   region         region?    @relation(fields: [regionid], references: [id], onDelete: Restrict, onUpdate: NoAction)
   vineyard       vineyard?  @relation(fields: [vineyardid], references: [id], onDelete: Restrict, onUpdate: NoAction)
   winetype       winetype?  @relation(fields: [winetypeid], references: [id], onDelete: Restrict, onUpdate: NoAction)
-  user           user       @relation(fields: [userid], references: [cuid], onDelete: Restrict, onUpdate: NoAction)
+  user           user       @relation(fields: [userid], references: [id], onDelete: Restrict, onUpdate: NoAction)
   location       location[]
 
   @@index([regionid], map: "winelist_regionid_fk")
@@ -73,14 +68,13 @@ model winelist {
 }
 
 model winetype {
-  id       Int        @id(map: "PK_winetype") @default(autoincrement())
-  cuid     String     @default(cuid())
+  id       String     @id(map: "PK_winetype") @default(cuid())
   winetype String     @unique
   winelist winelist[]
 }
 
 model user {
-  cuid         String   @id(map: "PK_user") @default(cuid())
+  id           String   @id(map: "PK_user") @default(cuid())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   username     String   @unique

@@ -13,7 +13,7 @@ export async function register({ username, password }: LoginForm) {
   const user = await db.user.create({
     data: { username, passwordHash },
   });
-  return { id: user.cuid, username };
+  return { id: user.id, username };
 }
 
 export async function login({ username, password }: LoginForm) {
@@ -25,7 +25,7 @@ export async function login({ username, password }: LoginForm) {
   const isCorrectPassword = await bcrypt.compare(password, user.passwordHash);
   if (!isCorrectPassword) return null;
 
-  return { id: user.cuid, username };
+  return { id: user.id, username };
 }
 
 const sessionSecret = process.env.SESSION_SECRET;
@@ -79,11 +79,10 @@ export async function getUser(request: Request) {
   }
 
   try {
-    const user = await db.user.findUnique({
-      where: { cuid: userId },
-      select: { cuid: true, username: true },
+    return await db.user.findUnique({
+      where: { id: userId },
+      select: { id: true, username: true },
     });
-    return user ? { id: user.cuid, username: user.username } : null;
   } catch {
     throw logout(request);
   }

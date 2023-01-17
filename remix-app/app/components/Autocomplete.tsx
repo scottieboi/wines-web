@@ -8,9 +8,10 @@ import Loading from "~/components/Loading";
 type AutocompleteProps = {
   inputId?: string;
   inputName?: string;
+  apiUrl: string;
 };
 
-const Autocomplete = ({ inputId, inputName }: AutocompleteProps) => {
+const Autocomplete = ({ inputId, inputName, apiUrl }: AutocompleteProps) => {
   const [selected, setSelected] = useState({ id: null, name: "" });
   const [query, setQuery] = useState("");
   const fetcher = useFetcher();
@@ -29,7 +30,7 @@ const Autocomplete = ({ inputId, inputName }: AutocompleteProps) => {
               autoComplete="off"
               onChange={(event) => {
                 setQuery(event.target.value);
-                fetcher.load(`/api/regions?q=${event.target.value}`);
+                fetcher.load(`${apiUrl}?q=${event.target.value}`);
               }}
             />
             <input
