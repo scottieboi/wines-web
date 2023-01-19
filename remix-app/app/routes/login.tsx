@@ -1,5 +1,4 @@
-import type { ActionFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { ActionArgs } from "@remix-run/node";
 import {
   Form,
   useActionData,
@@ -8,6 +7,7 @@ import {
 } from "@remix-run/react";
 import { db } from "~/utils/db.server";
 import { createUserSession, login, register } from "~/utils/session.server";
+import { badRequest } from "~/utils/request.server";
 
 function validateUsername(username: unknown) {
   if (typeof username !== "string" || username.length < 3) {
@@ -30,22 +30,7 @@ function validateUrl(url: any) {
   return "/dashboard";
 }
 
-type ActionData = {
-  formError?: string;
-  fieldErrors?: {
-    username: string | undefined;
-    password: string | undefined;
-  };
-  fields?: {
-    loginType: string;
-    username: string;
-    password: string;
-  };
-};
-
-const badRequest = (data: ActionData) => json(data, { status: 400 });
-
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionArgs) => {
   const form = await request.formData();
   const loginType = form.get("loginType");
   const username = form.get("username");
@@ -58,6 +43,8 @@ export const action: ActionFunction = async ({ request }) => {
     typeof redirectTo !== "string"
   ) {
     return badRequest({
+      fieldErrors: null,
+      fields: null,
       formError: `Form not submitted correctly.`,
     });
   }
@@ -67,8 +54,9 @@ export const action: ActionFunction = async ({ request }) => {
     username: validateUsername(username),
     password: validatePassword(password),
   };
-  if (Object.values(fieldErrors).some(Boolean))
-    return badRequest({ fieldErrors, fields });
+  if (Object.values(fieldErrors).some(Boolean)) {
+    return badRequest({ fieldErrors, fields, formError: null });
+  }
 
   switch (loginType) {
     case "login": {
@@ -76,6 +64,7 @@ export const action: ActionFunction = async ({ request }) => {
       const user = await login({ username, password });
       if (!user) {
         return badRequest({
+          fieldErrors: null,
           fields,
           formError: `Username/Password combination is incorrect`,
         });
@@ -90,6 +79,7 @@ export const action: ActionFunction = async ({ request }) => {
       });
       if (userExists) {
         return badRequest({
+          fieldErrors: null,
           fields,
           formError: `User with username ${username} already exists`,
         });
@@ -98,6 +88,7 @@ export const action: ActionFunction = async ({ request }) => {
       const user = await register({ username, password });
       if (!user) {
         return badRequest({
+          fieldErrors: null,
           fields,
           formError: `Something went wrong trying to create a new user.`,
         });
@@ -106,6 +97,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
     default: {
       return badRequest({
+        fieldErrors: null,
         fields,
         formError: `Login type invalid`,
       });

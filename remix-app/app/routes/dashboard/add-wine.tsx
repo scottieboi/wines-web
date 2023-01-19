@@ -1,28 +1,9 @@
 import Autocomplete from "~/components/Autocomplete";
-import type { ActionFunction } from "@remix-run/node";
+import type { ActionArgs } from "@remix-run/node";
 import { Form, useActionData, useTransition } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { z } from "zod";
-
-type ActionData = {
-  formError?: string;
-  fieldErrors?: {
-    region?: string;
-    wineName?: string;
-    vintage?: string;
-    vineyard?: string;
-    wineType?: string;
-  };
-  fields?: {
-    region: string;
-    wineName: string;
-    vintage: string;
-    vineyard: string;
-    wineType: string;
-  };
-};
-
-const badRequest = (data: ActionData) => json(data, { status: 400 });
+import { badRequest } from "~/utils/request.server";
 
 const AutocompleteSchema = z.object({
   id: z.string().or(z.null()),
@@ -31,22 +12,31 @@ const AutocompleteSchema = z.object({
 const VintageSchema = z.string().length(4);
 const WineNameSchema = z.string().min(1);
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionArgs) => {
   const form = await request.formData();
   const regionData = form.get("region-data");
   const vineyardData = form.get("vineyard-data");
   const wineTypeData = form.get("wine-type-data");
 
   if (typeof regionData !== "string") {
-    return badRequest({ formError: "Error saving region data" });
+    return badRequest({
+      fieldErrors: null,
+      formError: "Error saving region data",
+    });
   }
 
   if (typeof vineyardData !== "string") {
-    return badRequest({ formError: "Error saving vineyard data" });
+    return badRequest({
+      fieldErrors: null,
+      formError: "Error saving vineyard data",
+    });
   }
 
   if (typeof wineTypeData !== "string") {
-    return badRequest({ formError: "Error saving wine type data" });
+    return badRequest({
+      fieldErrors: null,
+      formError: "Error saving wine type data",
+    });
   }
 
   const region = AutocompleteSchema.safeParse(JSON.parse(regionData));
@@ -70,22 +60,23 @@ export const action: ActionFunction = async ({ request }) => {
     !vineyard.success ||
     !wineType.success
   ) {
-    return badRequest({ fieldErrors });
+    return badRequest({ fieldErrors, formError: null });
   }
+  const data = {
+    wineName: wineName.data,
+    vintage: vintage.data,
+    region: region.data,
+    wineType: wineType.data,
+    vineyard: vineyard.data,
+  };
 
-  console.log(
-    wineName.data,
-    vintage.data,
-    region.data,
-    wineType.data,
-    vineyard.data
-  );
+  console.log(data);
 
-  return null;
+  return json({ data, formError: null, fieldErrors: null });
 };
 
 export default function AddWine() {
-  const actionData = useActionData<ActionData>();
+  const actionData = useActionData<typeof action>();
   const transition = useTransition();
 
   return (

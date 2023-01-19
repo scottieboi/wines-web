@@ -7,23 +7,18 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import React from "react";
 
 import styles from "./tailwind.css";
-import type { LoaderFunction } from "@remix-run/node";
 import { getUser } from "~/utils/session.server";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
-type LoaderData = {
-  user?: { id: string; username: string };
-};
-
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderArgs) => {
   let user = await getUser(request);
-  let data: LoaderData = { user: user ?? undefined };
-  return data;
+  return json({ user });
 };
 
 function Document({
@@ -61,7 +56,7 @@ function Navbar({
   return (
     <div className="navbar bg-base-300">
       <div className="flex-1">
-        <Link to="dashboard" className="btn btn-ghost normal-case text-xl">
+        <Link to="dashboard" className="btn-ghost btn text-xl normal-case">
           Wines web
         </Link>
       </div>
@@ -88,7 +83,7 @@ function Navbar({
 }
 
 export default function App() {
-  let data = useLoaderData<LoaderData>();
+  let data = useLoaderData<typeof loader>();
 
   return (
     <Document title="Wines web">
