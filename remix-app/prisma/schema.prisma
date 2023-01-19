@@ -8,58 +8,80 @@ datasource db {
 }
 
 model box {
-  id       String        @id(map: "PK_box") @default(cuid())
-  boxno    Int
-  size     String?
+  id          String  @id(map: "PK_box") @default(cuid())
+  identifier  String
+  size        String?
+  description String?
+
+  userid String
+  user   user   @relation(fields: [userid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+
   location location[]
+
+  @@index([userid], map: "box_userid_fk")
 }
 
 model location {
-  id                String    @id(map: "PK_location") @default(cuid())
-  wineid            String?
-  no                Int?
-  boxid             String?
-  cellarversion     Int?      @db.SmallInt
-  box               box?      @relation(fields: [boxid], references: [id], onDelete: Restrict, onUpdate: NoAction)
-  winelist          winelist? @relation(fields: [wineid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  id            String @id(map: "PK_location") @default(cuid())
+  number        Int?
+  cellarversion Int?   @db.SmallInt
+
+  boxid    String
+  box      box      @relation(fields: [boxid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  wineid   String
+  winelist winelist @relation(fields: [wineid], references: [id], onDelete: Restrict, onUpdate: NoAction)
 
   @@index([boxid], map: "location_boxid_fk")
   @@index([wineid], map: "location_wineid_fk")
 }
 
 model region {
-  id       String     @id(map: "PK_region") @default(cuid())
-  region   String     @unique
+  id     String @id(map: "PK_region") @default(cuid())
+  region String @unique
+
+  userid String?
+  user   user?   @relation(fields: [userid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+
   winelist winelist[]
+
+  @@index([userid], map: "region_userid_fk")
 }
 
 model vineyard {
-  id       String     @id(map: "PK_vineyard") @default(cuid())
-  vineyard String     @unique
+  id       String @id(map: "PK_vineyard") @default(cuid())
+  vineyard String @unique
+
+  userid String?
+  user   user?   @relation(fields: [userid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+
   winelist winelist[]
+
+  @@index([userid], map: "vineyard_userid_fk")
 }
 
 model winelist {
-  id             String     @id(map: "PK_winelist") @default(cuid())
-  vintage        Int?       @db.SmallInt
+  id             String   @id(map: "PK_winelist") @default(cuid())
+  vintage        Int?     @db.SmallInt
   winename       String?
-  winetypeid     String?
-  percentalcohol Float?     @db.Real
-  pricepaid      Decimal?   @db.Decimal(7, 2)
-  yearbought     Int?       @db.SmallInt
-  bottlesize     Int?       @db.SmallInt
+  percentalcohol Float?   @db.Real
+  pricepaid      Decimal? @db.Decimal(7, 2)
+  yearbought     Int?     @db.SmallInt
+  bottlesize     Int?     @db.SmallInt
   notes          String?
-  rating         Int?       @db.SmallInt
-  drinkrangefrom Int?       @db.SmallInt
-  drinkrangeto   Int?       @db.SmallInt
-  regionid       String?
-  vineyardid     String?
-  userid         String
-  region         region?    @relation(fields: [regionid], references: [id], onDelete: Restrict, onUpdate: NoAction)
-  vineyard       vineyard?  @relation(fields: [vineyardid], references: [id], onDelete: Restrict, onUpdate: NoAction)
-  winetype       winetype?  @relation(fields: [winetypeid], references: [id], onDelete: Restrict, onUpdate: NoAction)
-  user           user       @relation(fields: [userid], references: [id], onDelete: Restrict, onUpdate: NoAction)
-  location       location[]
+  rating         Int?     @db.SmallInt
+  drinkrangefrom Int?     @db.SmallInt
+  drinkrangeto   Int?     @db.SmallInt
+
+  regionid   String?
+  region     region?   @relation(fields: [regionid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  vineyardid String?
+  vineyard   vineyard? @relation(fields: [vineyardid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  winetypeid String?
+  winetype   winetype? @relation(fields: [winetypeid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  userid     String
+  user       user      @relation(fields: [userid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+
+  location location[]
 
   @@index([regionid], map: "winelist_regionid_fk")
   @@index([vineyardid], map: "winelist_vineyardid_fk")
@@ -68,9 +90,15 @@ model winelist {
 }
 
 model winetype {
-  id       String     @id(map: "PK_winetype") @default(cuid())
-  winetype String     @unique
+  id       String @id(map: "PK_winetype") @default(cuid())
+  winetype String @unique
+
+  userid String?
+  user   user?   @relation(fields: [userid], references: [id], onDelete: Restrict, onUpdate: NoAction)
+
   winelist winelist[]
+
+  @@index([userid], map: "winetype_userid_fk")
 }
 
 model user {
@@ -79,5 +107,10 @@ model user {
   updatedAt    DateTime @updatedAt
   username     String   @unique
   passwordHash String
-  winelists    winelist[]
+
+  winelists winelist[]
+  winetype  winetype[]
+  region    region[]
+  vineyard  vineyard[]
+  box       box[]
 }
