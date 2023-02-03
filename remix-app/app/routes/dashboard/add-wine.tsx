@@ -1,6 +1,6 @@
 import Autocomplete from "~/components/Autocomplete";
 import type { ActionArgs } from "@remix-run/node";
-import { Form, useActionData, useTransition } from "@remix-run/react";
+import { Form, Link, useActionData, useTransition } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { z } from "zod";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -226,6 +226,9 @@ export default function AddWine() {
           >
             Submit
           </button>
+          <Link className="btn-ghost btn ml-2" to="/dashboard">
+            Back to Dashboard
+          </Link>
           {alertMessage && (
             <Alert message={alertMessage} onTimeout={deactivateAlert} />
           )}
