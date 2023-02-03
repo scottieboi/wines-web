@@ -8,6 +8,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { badRequest } from "~/utils/request.server";
 import Alert from "~/components/Alert";
 import { isString } from "~/utils/validation.server";
+import { db } from "~/utils/db.server";
+import { requireUserId } from "~/utils/session.server";
+import {
+  getRegionSubQuery,
+  getVineyardSubQuery,
+  getWineTypeSubQuery,
+} from "~/utils/queries.server";
 
 const AutocompleteSchema = z.object({
   id: z.string().or(z.null()),
@@ -59,15 +66,34 @@ export const action = async ({ request }: ActionArgs) => {
   ) {
     return badRequest({ fieldErrors, successMessage: null, formError: null });
   }
-  const data = {
-    wineName: wineName.data,
-    vintage: vintage.data,
-    region: region.data,
-    wineType: wineType.data,
-    vineyard: vineyard.data,
-  };
 
-  console.log(data);
+  const userId = await requireUserId(request);
+
+  try {
+    await db.winelist.create({
+      data: {
+        winename: wineName.data,
+        vintage: vintage.data,
+        user: {
+          connect: { id: userId },
+        },
+        region: getRegionSubQuery(region.data, userId),
+        vineyard: getVineyardSubQuery(vineyard.data, userId),
+        winetype: getWineTypeSubQuery(wineType.data, userId),
+      },
+      include: {
+        region: true,
+        vineyard: true,
+        winetype: true,
+      },
+    });
+  } catch (e) {
+    return badRequest({
+      fieldErrors: null,
+      successMessage: null,
+      formError: "Error saving data",
+    });
+  }
 
   return json({
     successMessage: "Added wine!",

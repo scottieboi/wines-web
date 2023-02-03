@@ -37,7 +37,7 @@ model location {
 
 model region {
   id     String @id(map: "PK_region") @default(cuid())
-  region String @unique
+  region String
 
   userid String?
   user   user?   @relation(fields: [userid], references: [id], onDelete: Restrict, onUpdate: NoAction)
@@ -49,7 +49,7 @@ model region {
 
 model vineyard {
   id       String @id(map: "PK_vineyard") @default(cuid())
-  vineyard String @unique
+  vineyard String
 
   userid String?
   user   user?   @relation(fields: [userid], references: [id], onDelete: Restrict, onUpdate: NoAction)
@@ -91,7 +91,7 @@ model winelist {
 
 model winetype {
   id       String @id(map: "PK_winetype") @default(cuid())
-  winetype String @unique
+  winetype String
 
   userid String?
   user   user?   @relation(fields: [userid], references: [id], onDelete: Restrict, onUpdate: NoAction)
