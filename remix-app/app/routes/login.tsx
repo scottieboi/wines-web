@@ -112,98 +112,96 @@ export default function Login() {
 
   return (
     <div className="container mx-auto">
-      <div className="prose">
-        <h2 className="mt-4">Login</h2>
-        <Form method="post">
+      <h2 className="my-4 text-2xl">Login</h2>
+      <Form method="post">
+        <input
+          type="hidden"
+          name="redirectTo"
+          value={searchParams.get("redirectTo") ?? undefined}
+        />
+        <fieldset className="form-control">
+          <label className="label cursor-pointer justify-start">
+            <input
+              type="radio"
+              name="loginType"
+              value="login"
+              defaultChecked={
+                !actionData?.fields?.loginType ||
+                actionData?.fields?.loginType === "login"
+              }
+              className="radio"
+            />
+            <span className="pl-2">Login</span>
+          </label>
+          <label className="label cursor-pointer justify-start">
+            <input
+              type="radio"
+              name="loginType"
+              value="register"
+              defaultChecked={actionData?.fields?.loginType === "register"}
+              className="radio"
+            />
+            <span className="pl-2">Register</span>
+          </label>
+        </fieldset>
+        <div>
+          <label htmlFor="username-input" className="label">
+            <span className="label-text">Username</span>
+          </label>
           <input
-            type="hidden"
-            name="redirectTo"
-            value={searchParams.get("redirectTo") ?? undefined}
+            type="text"
+            id="username-input"
+            name="username"
+            className="input-bordered input"
+            defaultValue={actionData?.fields?.username}
+            aria-invalid={Boolean(actionData?.fieldErrors?.username)}
+            aria-errormessage={
+              actionData?.fieldErrors?.username ? "username-error" : undefined
+            }
           />
-          <fieldset className="form-control">
-            <label className="label cursor-pointer justify-start">
-              <input
-                type="radio"
-                name="loginType"
-                value="login"
-                defaultChecked={
-                  !actionData?.fields?.loginType ||
-                  actionData?.fields?.loginType === "login"
-                }
-                className="radio"
-              />
-              <span className="pl-2">Login</span>
-            </label>
-            <label className="label cursor-pointer justify-start">
-              <input
-                type="radio"
-                name="loginType"
-                value="register"
-                defaultChecked={actionData?.fields?.loginType === "register"}
-                className="radio"
-              />
-              <span className="pl-2">Register</span>
-            </label>
-          </fieldset>
-          <div>
-            <label htmlFor="username-input" className="label">
-              <span className="label-text">Username</span>
-            </label>
-            <input
-              type="text"
-              id="username-input"
-              name="username"
-              className="input-bordered input"
-              defaultValue={actionData?.fields?.username}
-              aria-invalid={Boolean(actionData?.fieldErrors?.username)}
-              aria-errormessage={
-                actionData?.fieldErrors?.username ? "username-error" : undefined
-              }
-            />
-            {actionData?.fieldErrors?.username ? (
-              <div className="my-2" role="alert" id="username-error">
-                {actionData.fieldErrors.username}
-              </div>
-            ) : null}
-          </div>
-          <div>
-            <label htmlFor="password-input" className="label">
-              <span className="label-text">Password</span>
-            </label>
-            <input
-              id="password-input"
-              name="password"
-              type="password"
-              className="input-bordered input"
-              defaultValue={actionData?.fields?.password}
-              aria-invalid={Boolean(actionData?.fieldErrors?.password)}
-              aria-errormessage={
-                actionData?.fieldErrors?.password ? "password-error" : undefined
-              }
-            />
-            {actionData?.fieldErrors?.password ? (
-              <div className="my-2" role="alert" id="password-error">
-                {actionData.fieldErrors.password}
-              </div>
-            ) : null}
-          </div>
-          <div id="form-error-message">
-            {actionData?.formError ? (
-              <div className="my-2" role="alert">
-                {actionData.formError}
-              </div>
-            ) : null}
-          </div>
-          <button
-            type="submit"
-            className={`btn-primary btn ${
-              transition.state === "submitting" ? "btn-disabled" : ""
-            } my-4`}
-          >
-            Submit
-          </button>
-        </Form>
-      </div>
+          {actionData?.fieldErrors?.username ? (
+            <div className="my-2" role="alert" id="username-error">
+              {actionData.fieldErrors.username}
+            </div>
+          ) : null}
+        </div>
+        <div>
+          <label htmlFor="password-input" className="label">
+            <span className="label-text">Password</span>
+          </label>
+          <input
+            id="password-input"
+            name="password"
+            type="password"
+            className="input-bordered input"
+            defaultValue={actionData?.fields?.password}
+            aria-invalid={Boolean(actionData?.fieldErrors?.password)}
+            aria-errormessage={
+              actionData?.fieldErrors?.password ? "password-error" : undefined
+            }
+          />
+          {actionData?.fieldErrors?.password ? (
+            <div className="my-2" role="alert" id="password-error">
+              {actionData.fieldErrors.password}
+            </div>
+          ) : null}
+        </div>
+        <div id="form-error-message">
+          {actionData?.formError ? (
+            <div className="my-2" role="alert">
+              {actionData.formError}
+            </div>
+          ) : null}
+        </div>
+        <button
+          type="submit"
+          className={`btn-primary btn ${
+            transition.state === "submitting" ? "btn-disabled" : ""
+          } my-4`}
+        >
+          Submit
+        </button>
+      </Form>
     </div>
   );
 }
