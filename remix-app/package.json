@@ -13,6 +13,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@headlessui/react": "^1.7.8",
     "@heroicons/react": "^2.0.14",
     "@prisma/client": "^4.9.0",
@@ -24,6 +25,7 @@
     "isbot": "^3.6.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-query": "^3.39.3",
     "zod": "^3.20.2"
   },
   "devDependencies": {

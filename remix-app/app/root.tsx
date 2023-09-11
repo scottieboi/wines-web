@@ -13,6 +13,9 @@ import React from "react";
 
 import styles from "./tailwind.css";
 import { getUser } from "~/utils/session.server";
+import { QueryClientProvider, QueryClient } from "react-query";
+
+const queryClient = new QueryClient();
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
@@ -86,10 +89,12 @@ export default function App() {
   let data = useLoaderData<typeof loader>();
 
   return (
-    <Document title="Wines web">
-      <Navbar loggedIn={!!data.user} username={data.user?.username} />
-      <Outlet />
-    </Document>
+    <QueryClientProvider client={queryClient}>
+      <Document title="Wines web">
+        <Navbar loggedIn={!!data.user} username={data.user?.username} />
+        <Outlet />
+      </Document>
+    </QueryClientProvider>
   );
 }
 
